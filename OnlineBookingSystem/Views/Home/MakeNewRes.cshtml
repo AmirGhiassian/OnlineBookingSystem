@@ -1,0 +1,25 @@
+@model OnlineBookingSystem.Models.Wrapper
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+</head>
+
+<style>
+
+</style>
+
+<body>
+    <h2 class="text-center my-4" style="color: #007bff;">Reservations List</h2>
+    <div asp-validation-summary="All"></div>
+    <form method="POST" asp-action="MakeNewRes">
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+       
+    </form>
+</body>
+
+</html>

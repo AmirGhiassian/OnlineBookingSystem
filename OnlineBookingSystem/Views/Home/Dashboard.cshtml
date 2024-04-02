@@ -1,0 +1,61 @@
+@model OnlineBookingSystem.Models.Wrapper
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+</head>
+
+<style>
+    body {
+        background-color: #f0f8ff;
+    }
+
+    .thead-dark {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+
+    h2 {
+        color: #007bff;
+    }
+</style>
+
+<body>
+    <h2 class="text-center my-4" style="color: #007bff;">Reservations List</h2>
+
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Reservation ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Date and Time</th>
+                        <th scope="col">Party Size</th>
+                        <th scope="col">Special Requests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reservation in @Model.Reservations)
+                    {
+                            <tr>
+                                <td>@reservation.ReservationId</td>
+                                <td>@reservation.Name</td>
+                                <td>@reservation.Email</td>
+                                <td>@reservation.Phone</td>
+                                <td>@reservation.Date</td>
+                                <td>@reservation.PartySize</td>
+                                <td>@reservation.SpecialRequests</td>
+                            </tr>
+                    }
+                </tbody>
+            </table>
+            <a asp-action="MakeNewRes" class="btn btn-primary">Make New Reservations</a>
+        </div>
+    </div>
+</body>
+
+</html>
