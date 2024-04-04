@@ -1,13 +1,23 @@
+@model OnlineBookingSystem.Models.Customer
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>My Simple HTML Page</title>
+    <title>Login Page</title>
 </head>
-
 <body>
-    <h1>Welcome to My Simple HTML Page</h1>
-    <p>This is a basic HTML page.</p>
-</body>
+    <h1>Welcome to the login page</h1>
+    <p>This is a very complex html page</p>
 
+    <form method="post" asp-action="Login">
+        <div>
+            <label asp-for="Username">Username:</label>
+            <input asp-for="Username" />
+        </div>
+        <div>
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" type="password" />
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</body>
 </html>
