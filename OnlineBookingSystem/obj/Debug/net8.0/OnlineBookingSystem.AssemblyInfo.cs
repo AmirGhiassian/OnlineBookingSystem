@@ -10,11 +10,10 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("OnlineBookingSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce7f585aeb44fa8fbc9df213cbc11e7e00109ca7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93268bee8a44b89eddab0cf975814921343a20aa")]
 [assembly: System.Reflection.AssemblyProductAttribute("OnlineBookingSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OnlineBookingSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
