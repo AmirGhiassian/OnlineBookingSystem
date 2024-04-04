@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineBookingSystem.Models;
 namespace OnlineBookingSystem
@@ -12,7 +13,7 @@ namespace OnlineBookingSystem
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
 
-
+        public DbSet<IdentityUser> IdentityUsers { get; set; }
 
     }
 }
