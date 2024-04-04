@@ -8,12 +8,17 @@ namespace OnlineBookingSystem.Models
     {
         [Key]
         public int Id { get; set; }
+        
         [Required]
-        public string Name { get; set; }
-        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
         [Required]
-        public string Phone { get; set; }
+        [DataType(DataType.Password)]
+        public required string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
 
         [MaybeNull]
         public List<Reservation> Reservations { get; set; }

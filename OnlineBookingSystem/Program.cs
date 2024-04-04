@@ -1,7 +1,8 @@
 using OnlineBookingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using OnlineBookingSystem.Areas.Identity.Data;
+
+
 
 namespace OnlineBookingSystem
 {
@@ -19,9 +20,7 @@ namespace OnlineBookingSystem
 
             });
 
-            builder.Services.AddDbContext<OnlineBookingSystemIdentityDbContext>(options =>
-                options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("OnlineBookingSystemIdentityDbContextConnection")));
+
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<DBContext>();
 
