@@ -1,6 +1,3 @@
-
-using AspNetCore;
-
 namespace OnlineBookingSystem.Models
 {
     public class Wrapper
