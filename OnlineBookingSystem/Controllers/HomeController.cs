@@ -9,6 +9,16 @@ namespace OnlineBookingSystem.Controllers
         private readonly DBContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
+
+        public HomeController(DBContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
+        {
+            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+
+
         //ViewResult for Index.cshtml, to be called when a button is clicked
         public ViewResult Index()
         {
@@ -33,13 +43,11 @@ namespace OnlineBookingSystem.Controllers
                 }
 
                 // Create a new IdentityUser object with the user's username and email
-                _ = new IdentityUser { UserName = model.Username, Email = model.Email };
-                var result = await _userManager.CreateAsync(new Customer() { Reservations = new List<Reservation>() }, model.Password);
+                var result = await _userManager.CreateAsync(new Customer() { UserName = model.Username, Email = model.Email, Reservations = new List<Reservation>(), PasswordHash = model.Password });
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(new Customer() { Reservations = new List<Reservation>() }, isPersistent: false);
-                    return RedirectToAction("Login");
+                    return RedirectToAction("LoginPage");
                 }
 
                 foreach (var error in result.Errors)
@@ -47,7 +55,7 @@ namespace OnlineBookingSystem.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
+            
             // return the view with the model
             return View(model);
         }
