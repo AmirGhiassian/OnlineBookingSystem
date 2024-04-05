@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OnlineBookingSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf75b53942710acc74dca72b3cbf7debcca66829")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e8c1d79ccc204e2a07abc6d9c62265000862875")]
->>>>>>> 344d11e (Everything)
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a1ff149f65b7a0ee1cf02824284dc267e67ff12")]
 [assembly: System.Reflection.AssemblyProductAttribute("OnlineBookingSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OnlineBookingSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

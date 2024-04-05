@@ -22,9 +22,6 @@
     <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">/Users/amir/.nuget/packages/microsoft.codeanalysis.analyzers/3.3.4</PkgMicrosoft_CodeAnalysis_Analyzers>
     <PkgMicrosoft_CodeAnalysis_AnalyzerUtilities Condition=" '$(PkgMicrosoft_CodeAnalysis_AnalyzerUtilities)' == '' ">/Users/amir/.nuget/packages/microsoft.codeanalysis.analyzerutilities/3.3.0</PkgMicrosoft_CodeAnalysis_AnalyzerUtilities>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">/Users/amir/.nuget/packages/microsoft.entityframeworkcore.tools/8.0.3</PkgMicrosoft_EntityFrameworkCore_Tools>
-<<<<<<< HEAD
     <PkgEntityFramework Condition=" '$(PkgEntityFramework)' == '' ">/Users/amir/.nuget/packages/entityframework/6.1.0</PkgEntityFramework>
-=======
->>>>>>> 344d11e (Everything)
   </PropertyGroup>
 </Project>
