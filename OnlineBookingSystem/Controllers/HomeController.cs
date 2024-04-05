@@ -8,7 +8,8 @@ namespace OnlineBookingSystem.Controllers
     {
 
         private readonly DBContext _context; //Singleton Database Context
-
+        private readonly UserManager<Customer> _userManager;
+        private readonly SignInManager<Customer> _signInManager;
         //ViewResult for Index.cshtml, to be called when a button is clicked
         public ViewResult Index()
         {
