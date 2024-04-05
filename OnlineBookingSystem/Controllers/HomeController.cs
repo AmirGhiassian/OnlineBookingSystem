@@ -25,7 +25,6 @@ namespace OnlineBookingSystem.Controllers
             return View();
         }
 
-
         public IActionResult MakeNewRes() => View(); //Get request for MakeNewRes.cshtml
 
         [HttpPost]
