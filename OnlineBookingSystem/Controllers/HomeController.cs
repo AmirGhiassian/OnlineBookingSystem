@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
-using Azure.Core.Pipeline;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 namespace OnlineBookingSystem.Controllers
 {
     public class HomeController : Controller
@@ -56,7 +52,7 @@ namespace OnlineBookingSystem.Controllers
             return View(model);
         }
 
-        
+
 
         public IActionResult Dashboard()
         {
