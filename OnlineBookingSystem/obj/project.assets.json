@@ -8359,19 +8359,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/amir/.nuget/packages/": {}
+    "/Users/erichanoun/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/amir/OnlineBookingSystem/OnlineBookingSystem/OnlineBookingSystem.csproj",
+      "projectUniqueName": "/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/OnlineBookingSystem.csproj",
       "projectName": "OnlineBookingSystem",
-      "projectPath": "/Users/amir/OnlineBookingSystem/OnlineBookingSystem/OnlineBookingSystem.csproj",
-      "packagesPath": "/Users/amir/.nuget/packages/",
-      "outputPath": "/Users/amir/OnlineBookingSystem/OnlineBookingSystem/obj/",
+      "projectPath": "/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/OnlineBookingSystem.csproj",
+      "packagesPath": "/Users/erichanoun/.nuget/packages/",
+      "outputPath": "/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/amir/.nuget/NuGet/NuGet.Config"
+        "/Users/erichanoun/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -8390,6 +8390,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -8450,6 +8455,20 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.1, 8.0.1]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.osx-arm64",
+            "version": "[8.0.1, 8.0.1]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.1, 8.0.1]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -8458,7 +8477,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.100-preview.2.24157.14/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -8467,7 +8486,7 @@
       "code": "Undefined",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Problem reading the cache file /Users/amir/OnlineBookingSystem/OnlineBookingSystem/obj/project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+      "message": "Problem reading the cache file /Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/obj/project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
     },
     {
       "code": "NU1701",

@@ -524,3 +524,7 @@
 /Users/amir/OnlineBookingSystem/OnlineBookingSystem/obj/Debug/net8.0/OnlineBookingSystem.pdb
 /Users/amir/OnlineBookingSystem/OnlineBookingSystem/obj/Debug/net8.0/OnlineBookingSystem.genruntimeconfig.cache
 /Users/amir/OnlineBookingSystem/OnlineBookingSystem/obj/Debug/net8.0/ref/OnlineBookingSystem.dll
+/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/bin/Debug/net8.0/EntityFramework.SqlServer.dll
+/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/bin/Debug/net8.0/EntityFramework.dll
+/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/bin/Debug/net8.0/Microsoft.AspNet.Identity.Core.dll
+/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/bin/Debug/net8.0/Microsoft.AspNet.Identity.EntityFramework.dll

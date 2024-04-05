@@ -17,86 +17,55 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = OnlineBookingSystem
 build_property.RootNamespace = OnlineBookingSystem
-build_property.ProjectDir = /Users/amir/OnlineBookingSystem/OnlineBookingSystem/
+build_property.ProjectDir = /Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/amir/OnlineBookingSystem/OnlineBookingSystem
+build_property.MSBuildProjectDirectory = /Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem
 build_property._RazorSourceGeneratorDebug = 
 
-<<<<<<< HEAD
-=======
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/Account/Login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/Account/Logout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9Mb2dvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/Account/Register.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9SZWdpc3Rlci5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/Account/RegisterConfirmation.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9SZWdpc3RlckNvbmZpcm1hdGlvbi5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/Account/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvQWNjb3VudC9fVmlld0ltcG9ydHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Areas/Identity/Pages/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
->>>>>>> 344d11edb121d1cc1d6dbd33df72734b6204df5d
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Home/Dashboard.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Home/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9EYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Home/Index.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Home/LoginPage.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Home/LoginPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Mb2dpblBhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Home/MakeNewRes.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Home/MakeNewRes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9NYWtlTmV3UmVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Home/Register.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Home/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9SZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Home/_Layout.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Home/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9fTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Shared/_Layout.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Shared/_LoginPartial.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/Shared/_ValidationScriptsPartial.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/_ViewImports.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/amir/OnlineBookingSystem/OnlineBookingSystem/Views/_ViewStart.cshtml]
+[/Users/erichanoun/Documents/Advanced .NET/OnlineBookingSystem/OnlineBookingSystem/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

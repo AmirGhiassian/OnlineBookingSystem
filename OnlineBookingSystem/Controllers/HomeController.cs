@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 namespace OnlineBookingSystem.Controllers
 {
     public class HomeController : Controller
