@@ -7,6 +7,7 @@ namespace OnlineBookingSystem.Models
 {
     public class Customer : IdentityUser //Model class for a single customer, used for registration within the CustomerRepo
     {
-        public List<Reservation> Reservations { get; set; }
+        [Required]
+        public required List<Reservation> Reservations { get; set; }
     }
 }

@@ -6,11 +6,23 @@ namespace OnlineBookingSystem.Models
     {
         [Key]
         public int ResturantId { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
-        public string Description { get; set; }
-        public string Image { get; set; }
-        public Reservation[] reservedTimes { get; set; }
+
+        [Required]
+        public required string Name { get; set; }
+
+        [Required]
+        public required string Address { get; set; }
+
+        [Required]
+        public required string Phone { get; set; }
+
+        [Required]
+        public required string Description { get; set; }
+
+        [Required]
+        public required string Image { get; set; }
+
+        [Required]
+        public required Reservation[] reservedTimes { get; set; }
     }
 }

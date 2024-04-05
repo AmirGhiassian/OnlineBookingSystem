@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using Azure.Core.Pipeline;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 namespace OnlineBookingSystem.Controllers
 {
     public class HomeController : Controller
@@ -23,6 +27,27 @@ namespace OnlineBookingSystem.Controllers
         public IActionResult Reservations()
         {
             return View();
+        }
+
+        public IActionResult LoginPage() => View(); //Get request for LoginPage.cshtml
+
+        [HttpPost]
+        public IActionResult Login(LoginViewModel account)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _signInManager.PasswordSignInAsync(account.Email, account.Password, account.RememberMe, false).Result;
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Dashboard");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                    return View("LoginPage");
+                }
+            }
+            return View("LoginPage");
         }
 
         public IActionResult MakeNewRes() => View(); //Get request for MakeNewRes.cshtml
