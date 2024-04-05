@@ -2,6 +2,10 @@ using OnlineBookingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 344d11edb121d1cc1d6dbd33df72734b6204df5d
 
 namespace OnlineBookingSystem
 {
