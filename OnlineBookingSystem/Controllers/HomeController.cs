@@ -24,7 +24,7 @@ namespace OnlineBookingSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                _ = new IdentityUser { UserName = model.Username, Email = model.Email };
                 var result = await _userManager.CreateAsync(new Customer() { Reservations = new List<Reservation>() }, model.Password);
 
                 if (result.Succeeded)
@@ -41,6 +41,8 @@ namespace OnlineBookingSystem.Controllers
 
             return View(model);
         }
+
+        
 
         public IActionResult Dashboard()
         {
