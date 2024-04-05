@@ -6,10 +6,16 @@ namespace OnlineBookingSystem.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        public required string Name { get; set; }
 
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Message { get; set; }
+        [Required]
+        public required string Email { get; set; }
+
+        [Required]
+        public required string Phone { get; set; }
+
+        [Required]
+        public required string Message { get; set; }
     }
 }
