@@ -19,6 +19,10 @@ namespace OnlineBookingSystem.Controllers
             return View("LoginPage"); //Bring user to starting login page
         }
 
+        //HttpGet for Register.cshtml
+        [HttpGet]
+        public IActionResult Register() => View();
+
         //HttpPost for Register.cshtml
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
