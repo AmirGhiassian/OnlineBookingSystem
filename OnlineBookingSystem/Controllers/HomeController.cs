@@ -19,6 +19,29 @@ namespace OnlineBookingSystem.Controllers
             return View("LoginPage"); //Bring user to starting login page
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(new Customer() { Reservations = new List<Reservation>() }, model.Password);
+
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(new Customer() { Reservations = new List<Reservation>() }, isPersistent: false);
+                    return RedirectToAction("Login");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
         public IActionResult Dashboard()
         {
             return View();
