@@ -8,17 +8,21 @@
     <h1>Register</h1>
     <form asp-action="Register" asp-controller="Account" method="post">
         <div>
-            <label asp-for="Email">Email:</label>
+            <label asp-for="Username">User Name: </label>
+            <input asp-for="Username" />
+            <span asp-validation-for="Username"></span>
+        <div>
+            <label asp-for="Email">Email: </label>
             <input asp-for="Email" />
             <span asp-validation-for="Email"></span>
         </div>
         <div>
-            <label asp-for="Password">Password:</label>
+            <label asp-for="Password">Password: </label>
             <input asp-for="Password" type="password" />
             <span asp-validation-for="Password"></span>
         </div>
         <div>
-            <label asp-for="ConfirmPassword">Confirm Password:</label>
+            <label asp-for="ConfirmPassword">Confirm Password: </label>
             <input asp-for="ConfirmPassword" type="password" />
             <span asp-validation-for="ConfirmPassword"></span>
         </div>

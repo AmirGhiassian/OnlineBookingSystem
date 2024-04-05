@@ -24,6 +24,14 @@ namespace OnlineBookingSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check if Password and ConfirmPassword fields match
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Password and confirmation password do not match.");
+                    return View(model);
+                }
+
+                // Create a new IdentityUser object with the user's username and email
                 _ = new IdentityUser { UserName = model.Username, Email = model.Email };
                 var result = await _userManager.CreateAsync(new Customer() { Reservations = new List<Reservation>() }, model.Password);
 
@@ -39,6 +47,7 @@ namespace OnlineBookingSystem.Controllers
                 }
             }
 
+            // return the view with the model
             return View(model);
         }
 
