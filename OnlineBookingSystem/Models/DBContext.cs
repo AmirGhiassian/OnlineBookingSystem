@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 namespace OnlineBookingSystem
 {
 
-    public class DBContext : IdentityDbContext
+    public class DBContext : DbContext
     {
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         { }
@@ -15,8 +15,9 @@ namespace OnlineBookingSystem
         public DbSet<Restaurant> Restaurants { get; set; }
 
 
-        public DbSet<IdentityUser> Customers { get; set; }
         public DbSet<IdentityRole> Roles { get; set; }
+
+        
 
     }
 }
