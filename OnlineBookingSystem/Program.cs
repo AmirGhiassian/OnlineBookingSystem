@@ -16,7 +16,7 @@ namespace OnlineBookingSystem
             builder.Services.AddControllersWithViews();
 
 
-            builder.Services.AddDefaultIdentity<Customer>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<OnlineBookingSystemIdentityDbContext>();
+            builder.Services.AddDefaultIdentity<Customer>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<OnlineBookingSystemIdentityDbContext>();
 
             builder.Services.AddDbContext<DBContext>(opt =>
             {
