@@ -1,4 +1,4 @@
-@model OnlineBookingSystem.Models.Wrapper
+@model List<OnlineBookingSystem.Model.Resturant>
 <!DOCTYPE html>
 <html>
 
@@ -41,15 +41,15 @@
                 <tbody>
                     @foreach (var reservation in @Model.Reservations)
                     {
-                        <tr>
-                            <td>@reservation.ReservationId</td>
-                            <td>@reservation.Name</td>
-                            <td>@reservation.Email</td>
-                            <td>@reservation.Phone</td>
-                            <td>@reservation.Date</td>
-                            <td>@reservation.PartySize</td>
-                            <td>@reservation.SpecialRequests</td>
-                        </tr>
+                            <tr>
+                                <td>@reservation.ReservationId</td>
+                                <td>@reservation.Name</td>
+                                <td>@reservation.Email</td>
+                                <td>@reservation.Phone</td>
+                                <td>@reservation.Date</td>
+                                <td>@reservation.PartySize</td>
+                                <td>@reservation.SpecialRequests</td>
+                            </tr>
                     }
                 </tbody>
             </table>

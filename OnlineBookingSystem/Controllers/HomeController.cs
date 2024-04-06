@@ -67,8 +67,8 @@ namespace OnlineBookingSystem.Controllers
 
         public IActionResult Dashboard()
         {
-            var restaurants = _context.Restaurants.ToList(); // Retrieve the list of restaurants from the database
-            return View(restaurants);
+
+            return View(_context.Restaurants.ToList());
         }
 
         public IActionResult Reservations()
