@@ -4,41 +4,85 @@
 }
 
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <title>Login Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
+    <style>
+        :root {
+            font-size: 16px; /* Base font size */
+        }
 
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevents scrolling caused by oversized content */
+        }
+
+        .bg-image {
+            background-image: url('images/login_image.png');
+            height: 100%;
+            width: 100%;
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: -1;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 5rem; /* Using rem for padding */
+            border-radius: 0.625rem; /* 10px equivalent in rem */
+            height: 30rem; /* Height in rem */
+            width: 30rem; /* Width in rem */
+            max-width: 50rem; /* Increased max-width for larger area, in rem */
+            background: #FFFFFF; /* Solid white background */
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1), 0 0.375rem 1.25rem rgba(0, 0, 0, 0.19); /* Shadow in rem */
+            z-index: 2; /* Ensure it's above the bg-overlay */
+        }
+    </style>
+</head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-        <form method="post" asp-action="Login" asp-controller="Home">
-            <table class="table">
-                <tr>
-                    <td>
-                        <label asp-for="UserName">Username:</label>
-                    </td>
-                    <td>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="container form-container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mb-4">Login</h1>
+                <form method="post" asp-action="Login" asp-controller="Home">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
                         <input type="text" id="username" name="UserName" class="form-control" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label asp-for="Password">Password:</label>
-                    </td>
-                    <td>
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">Password:</label>
                         <input type="password" id="Password" name="Password" class="form-control" required>
-                    </td>
-                </tr>
-            </table>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <!-- Register button -->
-            <a asp-action="Register" asp-controller="Home" class="btn btn-secondary">Register</a>
-        </form>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <a asp-action="Register" asp-controller="Home" class="btn btn-secondary w-100 mt-2">Register</a>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>
