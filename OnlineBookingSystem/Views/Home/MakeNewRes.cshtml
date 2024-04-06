@@ -4,18 +4,18 @@
 
 <head>
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
-<style>
-
-</style>
-
-<!-- Body of cshtlm containing the form for the make a new reservation page -->
-
 <body>
-    <h2 class="text-center my-4" style="color: #007bff;">Reservations List</h2>
-    <div asp-validation-summary="All"></div>
+    @{
+        var restaurant = ViewBag.Restaurant as Restaurant;
+    }
+
+    <h2 class="text-center my-4" style="color: #007bff;">Make a Reservation - @restaurant.Name</h2>
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
     <form method="POST" asp-action="MakeNewRes">
+        <input asp-for="RestaurantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
         <div class="form-group">
             <label asp-for="Name">Name</label>
             <input asp-for="Name" class="form-control" required>
@@ -43,6 +43,10 @@
 
         <button type="submit" class="btn btn-primary">Submit</button> <!-- Submit button -->
     </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
