@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 namespace OnlineBookingSystem.Controllers
 {
     public class HomeController : Controller
@@ -9,6 +10,8 @@ namespace OnlineBookingSystem.Controllers
         private readonly DBContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
+
+        private PasswordHasher<Customer> passwordHasher = new PasswordHasher<Customer>();
 
         public HomeController(DBContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
@@ -43,7 +46,7 @@ namespace OnlineBookingSystem.Controllers
                 }
 
                 // Create a new IdentityUser object with the user's username and email
-                var result = await _userManager.CreateAsync(new Customer() { UserName = model.Username, Email = model.Email, Reservations = new List<Reservation>(), PasswordHash = model.Password });
+                var result = await _userManager.CreateAsync(new Customer() { UserName = model.Username, Email = model.Email, Reservations = new List<Reservation>(), PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password) });
 
                 if (result.Succeeded)
                 {
@@ -55,7 +58,7 @@ namespace OnlineBookingSystem.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            
+
             // return the view with the model
             return View(model);
         }
@@ -75,21 +78,29 @@ namespace OnlineBookingSystem.Controllers
         public IActionResult LoginPage() => View(); //Get request for LoginPage.cshtml
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel account)
+        public async Task<IActionResult> Login(LoginViewModel account)
         {
             if (ModelState.IsValid)
             {
-                var result = _signInManager.PasswordSignInAsync(account.Email, account.Password, account.RememberMe, false).Result;
+                var user = await _userManager.FindByNameAsync(account.UserName);
+
+
+
+                Debug.WriteLine(user);
+                var result = await _signInManager.CheckPasswordSignInAsync(user, passwordHasher.HashPassword(user, account.Password), false);
+                Debug.WriteLine(result);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Dashboard");
                 }
                 else
                 {
+                    Debug.WriteLine("Invalid Login Attempt");
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                     return View("LoginPage");
                 }
             }
+            Debug.WriteLine("Invalid Login Attempt");
             return View("LoginPage");
         }
 
