@@ -67,7 +67,8 @@ namespace OnlineBookingSystem.Controllers
 
         public IActionResult Dashboard()
         {
-            return View();
+            var restaurants = _context.Restaurants.ToList(); // Retrieve the list of restaurants from the database
+            return View(restaurants);
         }
 
         public IActionResult Reservations()
@@ -111,7 +112,7 @@ namespace OnlineBookingSystem.Controllers
             {
                 _context.Reservations.Add(reservation);
                 _context.SaveChanges();
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("Profile");
             }
             return View(reservation);
         }
