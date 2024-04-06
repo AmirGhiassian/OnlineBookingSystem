@@ -90,7 +90,7 @@ namespace OnlineBookingSystem.Controllers
                 Debug.WriteLine(result);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Dashboard");
+                    return RedirectToAction("Dashboard", _context.Restaurants.ToList());
                 }
                 else
                 {
