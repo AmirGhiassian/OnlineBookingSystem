@@ -5,6 +5,7 @@
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 
 <body>
@@ -13,7 +14,7 @@
     }
 
     <h2 class="text-center my-4" style="color: #007bff;">Make a Reservation - @restaurant.Name</h2>
-    <div asp-validation-summary="All" class="alert alert-danger"></div>
+    <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
     <form method="POST" asp-action="MakeNewRes">
         <input asp-for="RestaurantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
         <div class="form-group">
@@ -29,24 +30,70 @@
             <input asp-for="Phone" class="form-control" required>
         </div>
         <div class="form-group">
-            <label asp-for="PartySize">Number of Guests</label>
-            <input asp-for="PartySize" class="form-control" required>
+            <label asp-for="PartySize">Number of Guests (1 - 15)</label>
+            <input asp-for="PartySize" class="form-control" type="number" min="1" max="15" required>
         </div>
         <div class="form-group">
             <label asp-for="Date">Date</label>
-            <input asp-for="Date" class="form-control" required>
+            <input asp-for="Date" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
         </div>
         <div class="form-group">
-            <label asp-for="SpecialRequests">Message</label>
-            <textarea asp-for="SpecialRequests" class="form-control" required></textarea>
+            <label asp-for="Time">Time (8:30 AM - 11:00 PM)</label>
+            <input asp-for="Time" class="form-control" type="time" min="08:30" max="23:00" step="1800" required>
+        </div>
+        <div class="form-group">
+            <label asp-for="SpecialRequests">Message/Special Requests (Allergy, Birthday, etc.)</label>
+            <textarea asp-for="SpecialRequests" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price">Price</label>
+            <input asp-for="Price" class="form-control" readonly>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button> <!-- Submit button -->
     </form>
 
+    <!--- Script to calculate the price based on the time selected --->
+    <script>
+        $(document).ready(function () {
+            $('#Time, #PartySize').change(function () {
+                var time = $('#Time').val();
+                var guests = $('#PartySize').val();
+                var hour = time.split(':')[0];
+                var priceField = $('#Price');
+
+                var price;
+                if (hour >= 6 && hour < 12) {
+                    price = 10; // Breakfast price
+                } else if (hour >= 12 && hour < 18) {
+                    price = 20; // Lunch price
+                } else {
+                    price = 30; // Dinner price
+                }
+
+                var guestPrice = guests * 1.50; // Calculate the price for guests
+                price += guestPrice; // Add the guest price to the base price
+
+                priceField.val('$' + price.toFixed(2)); // Set the price field value with 2 decimal points
+            });
+
+            // Handle form validation
+            $('form').submit(function () {
+                $('.alert.alert-danger').hide(); // Hide the validation summary bar initially
+
+                // Check if any form field is invalid
+                if ($('.field-validation-error').length > 0) {
+                    $('.alert.alert-danger').show(); // Show the validation summary bar
+                    return false; // Prevent form submission
+                }
+            });
+        });
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>
