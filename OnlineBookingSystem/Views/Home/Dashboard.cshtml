@@ -4,59 +4,32 @@
 
 <head>
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
-<style>
-    body {
-        background-color: #f0f8ff;
-    }
-
-    .thead-dark {
-        background-color: #007bff;
-        color: #ffffff;
-    }
-
-    h2 {
-        color: #007bff;
-    }
-</style>
-
 <body>
-    <h2 class="text-center my-4" style="color: #007bff;">Reservations List</h2>
-
     <div class="container">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Reservation ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Date and Time</th>
-                        <th scope="col">Party Size</th>
-                        <th scope="col">Special Requests</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var restaurant in @Model)
-                    {
-                        <tr>
-                            <td>@restaurant.ResturantId</td>
-                            <td>@restaurant.Name</td>
-                            <td>@restaurant.Phone</td>
-                            <td>@restaurant.Address</td>
-                            <td>@restaurant.Phone</td>
-                            <td>@restaurant.Description</td>
-                            <td><img src=@restaurant.Image> </td>
-    
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <a asp-action="MakeNewRes" class="btn btn-primary">Make New Reservations</a>
+        <h2 class="text-center my-4" style="color: #007bff;">Restaurant List</h2>
+
+        <div class="list-group">
+            @foreach (var restaurant in @Model)
+            {
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">@restaurant.Name</h5>
+                        <small>@restaurant.Phone</small>
+                    </div>
+                    <p class="mb-1">@restaurant.Address</p>
+                    <p class="mb-1">@restaurant.Description</p>
+                    <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
+                </a>
+            }
         </div>
+
+        <a asp-action="MakeNewRes" class="btn btn-primary mt-4">Make New Reservations</a>
     </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
