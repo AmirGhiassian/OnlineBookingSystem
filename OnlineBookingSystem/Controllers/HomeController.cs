@@ -111,7 +111,7 @@ namespace OnlineBookingSystem.Controllers
             {
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
-            
+
             ViewBag.Restaurant = restaurant; //Pass the restaurant to the view
             return View(); //Return the view
         }
@@ -120,13 +120,38 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public IActionResult MakeNewRes(Reservation reservation)
         {
-            if (ModelState.IsValid) //Check if the model is valid
+            if (ModelState.IsValid)
             {
-                _context.Reservations.Add(reservation); //Add the reservation to the database
+                // Check if a time has been inputted
+                if (reservation.Time != null)
+                {
+                    // Calculate the price based on the reservation time
+                    if (reservation.Time.Hours >= 6 && reservation.Time.Hours < 12)
+                    {
+                        reservation.Price = 10; // Breakfast price
+                    }
+                    else if (reservation.Time.Hours >= 12 && reservation.Time.Hours < 18)
+                    {
+                        reservation.Price = 20; // Lunch price
+                    }
+                    else if
+                    {
+                        reservation.Price = 30; // Dinner price
+                    }
+                    else
+                    {
+                        reservation.Price = 0; // Default price
+                    }
+                }
+
+                // Add the price for guests
+                reservation.Price += reservation.PartySize * 1.50;
+
+                _context.Reservations.Add(reservation);
                 _context.SaveChanges();
-                return RedirectToAction("Dashboard"); //Return to the dashboard
+                return RedirectToAction("Dashboard");
             }
-            return View(reservation); //Return the view with the reservation
+            return View(reservation);
         }
     }
 }
