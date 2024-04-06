@@ -39,17 +39,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var reservation in @Model.Reservations)
+                    @foreach (var reservation in @Model)
                     {
-                            <tr>
-                                <td>@reservation.ReservationId</td>
-                                <td>@reservation.Name</td>
-                                <td>@reservation.Email</td>
-                                <td>@reservation.Phone</td>
-                                <td>@reservation.Date</td>
-                                <td>@reservation.PartySize</td>
-                                <td>@reservation.SpecialRequests</td>
-                            </tr>
+                        <tr>
+                            <td>@reservation.ReservationId</td>
+                            <td>@reservation.Name</td>
+                            <td>@reservation.Email</td>
+                            <td>@reservation.Phone</td>
+                            <td>@reservation.Date</td>
+                            <td>@reservation.PartySize</td>
+                            <td>@reservation.SpecialRequests</td>
+                        </tr>
                     }
                 </tbody>
             </table>
