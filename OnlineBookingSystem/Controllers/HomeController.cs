@@ -134,7 +134,7 @@ namespace OnlineBookingSystem.Controllers
                     {
                         reservation.Price = 20; // Lunch price
                     }
-                    else if
+                    else if (reservation.Time.Hours >= 18 && reservation.Time.Hours < 23)
                     {
                         reservation.Price = 30; // Dinner price
                     }

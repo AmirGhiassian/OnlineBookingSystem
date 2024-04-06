@@ -39,7 +39,7 @@
         </div>
         <div class="form-group">
             <label asp-for="Time">Time (8:30 AM - 11:00 PM)</label>
-            <input asp-for="Time" class="form-control" type="time" min="08:30" max="23:00" step="1800" required>
+            <input asp-for="Time" class="form-control" type="time" min="06:30" max="23:00" step="1800" required>
         </div>
         <div class="form-group">
             <label asp-for="SpecialRequests">Message/Special Requests (Allergy, Birthday, etc.)</label>
@@ -67,8 +67,10 @@
                     price = 10; // Breakfast price
                 } else if (hour >= 12 && hour < 18) {
                     price = 20; // Lunch price
-                } else {
+                } else if (hour >= 18 && hour <= 23){
                     price = 30; // Dinner price
+                } else {
+                    price = 0; // Invalid time
                 }
 
                 var guestPrice = guests * 1.50; // Calculate the price for guests
