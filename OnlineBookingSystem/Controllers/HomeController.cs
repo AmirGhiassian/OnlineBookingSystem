@@ -103,18 +103,30 @@ namespace OnlineBookingSystem.Controllers
             return View("LoginPage");
         }
 
-        public IActionResult MakeNewRes() => View(); //Get request for MakeNewRes.cshtml
-
-        [HttpPost]
-        public IActionResult MakeNewRes(Reservation reservation) //Post request for MakeNewRes.cshtml
+        //HttpGet for MakeNewRes.cshtml
+        public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID
         {
-            if (ModelState.IsValid)
+            var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
+            if (restaurant == null)
             {
-                _context.Reservations.Add(reservation);
-                _context.SaveChanges();
-                return RedirectToAction("Profile");
+                return NotFound(); //If the restaurant is not found, return a 404 error
             }
-            return View(reservation);
+            
+            ViewBag.Restaurant = restaurant; //Pass the restaurant to the view
+            return View(); //Return the view
+        }
+
+        //HttpPost for MakeNewRes.cshtml
+        [HttpPost]
+        public IActionResult MakeNewRes(Reservation reservation)
+        {
+            if (ModelState.IsValid) //Check if the model is valid
+            {
+                _context.Reservations.Add(reservation); //Add the reservation to the database
+                _context.SaveChanges();
+                return RedirectToAction("Dashboard"); //Return to the dashboard
+            }
+            return View(reservation); //Return the view with the reservation
         }
     }
 }
