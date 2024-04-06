@@ -20,6 +20,9 @@ namespace OnlineBookingSystem.Models
         public required string Date { get; set; } //The DateAndTime requested for reservation
         //Time of the date will be used to determine the special prices for the reservation
         [Required]
+        public TimeSpan Time { get; set; } // The time of the reservation
+        public decimal Price { get; set; } // The price of the reservation
+        [Required]
         public int PartySize { get; set; }
         public required string SpecialRequests { get; set; } //Optional field
 
