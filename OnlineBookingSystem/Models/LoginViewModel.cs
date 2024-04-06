@@ -5,13 +5,12 @@ namespace OnlineBookingSystem.Models
     public class LoginViewModel
     {
         [Required]
-        [EmailAddress]
-        public required string Email { get; set; }
+        public required string UserName { get; set; }
         [Required]
         [DataType(DataType.Password)]
         public required string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        //[Display(Name = "Remember me?")]
+        //public bool RememberMe { get; set; }
     }
 }
