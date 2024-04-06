@@ -14,7 +14,7 @@
         <div class="list-group">
             @foreach (var restaurant in @Model)
             {
-                <a href="#" class="list-group-item list-group-item-action">
+                <div class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">@restaurant.Name</h5>
                         <small>@restaurant.Phone</small>
@@ -22,11 +22,11 @@
                     <p class="mb-1">@restaurant.Address</p>
                     <p class="mb-1">@restaurant.Description</p>
                     <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
-                </a>
+                    <br/>
+                    <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.ResturantId" class="btn btn-primary mt-4">Make a Reservation</a>
+                </div>
             }
         </div>
-
-        <a asp-action="MakeNewRes" class="btn btn-primary mt-4">Make New Reservations</a>
     </div>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
