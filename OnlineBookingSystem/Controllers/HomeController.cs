@@ -84,10 +84,8 @@ namespace OnlineBookingSystem.Controllers
             {
                 var user = await _userManager.FindByNameAsync(account.UserName);
 
-
-
                 Debug.WriteLine(user);
-                var result = await _signInManager.CheckPasswordSignInAsync(user, passwordHasher.HashPassword(user, account.Password), false);
+                var result = await _signInManager.CheckPasswordSignInAsync(user, account.Password, false);
                 Debug.WriteLine(result);
                 if (result.Succeeded)
                 {
