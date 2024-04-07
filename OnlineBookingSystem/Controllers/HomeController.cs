@@ -146,7 +146,7 @@ namespace OnlineBookingSystem.Controllers
             if (ModelState.IsValid)
             {
                 // Check if a time has been inputted
-                if (reservation.Time != null)
+                if (reservation.Time != TimeSpan.Zero)
                 {
                     // Calculate the price based on the reservation time
                     if (reservation.Time.Hours >= 6 && reservation.Time.Hours < 12)
