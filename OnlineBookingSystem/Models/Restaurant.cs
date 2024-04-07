@@ -23,6 +23,6 @@ namespace OnlineBookingSystem.Models
         public required string Image { get; set; }
 
         [Required]
-        public required Reservation[] reservedTimes { get; set; }
+        public ICollection<Reservation> reservedTimes { get; set; } = new List<Reservation>();
     }
 }
