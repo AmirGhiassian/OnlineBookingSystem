@@ -16,23 +16,63 @@ namespace OnlineBookingSystem.Controllers
 
         private void ResturantDatabaseInit()
         {
-            if (_context.Restaurants.Count() == 0)
+            var restaurants = new List<Restaurant>
             {
-                _context.Restaurants.Add(new Restaurant
-                {
-                    Name = "McDonalds",
-                    Address = "1234 Main St",
-                    Phone = "555-555-5555",
-                    Description = "Fast Food",
-                    Image = "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Big-Mac.jpg?$Product_Desktop$",
-                    reservedTimes = Array.Empty<Reservation>()
+            new Restaurant
+            {
+                Name = "McDonalds",
+                Address = "1234 Main St",
+                Phone = "134-386-9753",
+                Description = "Best and most popular fast food restaurant in the world.",
+                Image = "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Big-Mac.jpg?$Product_Desktop$",
+                reservedTimes = Array.Empty<Reservation>()
+            },
+            new Restaurant
+            {
+                Name = "Burger King",
+                Address = "5678 Main St",
+                Phone = "905-072-9075",
+                Description = "Customizable burgers and sandwiches.",
+                Image = "https://www.bk.com/sites/default/files/03202020_BK_Web_LTO_Whopper_0.png",
+                reservedTimes = Array.Empty<Reservation>()
+            },
+            new Restaurant
+            {
+                Name = "Wendy's",
+                Address = "9101 Main St",
+                Phone = "905-783-8453",
+                Description = "Fresh, never frozen beef burgers.",
+                Image = "https://www.wendys.com/en-us/assets/menu/product/cheeseburger-2x.png",
+                reservedTimes = Array.Empty<Reservation>()
+            },
+            new Restaurant
+            {
+                Name = "Taco Bell",
+                Address = "1122 Main St",
+                Phone = "238-493-8652",
+                Description = "Mexican-inspired fast food.",
+                Image = "https://www.tacobell.com/images/21499_cheesy-gordita-crunch.png",
+                reservedTimes = Array.Empty<Reservation>()
+            }
+            };
 
-                });
-                _context.SaveChanges();
+            foreach (var restaurant in restaurants)
+            {
+            var existingRestaurant = _context.Restaurants.FirstOrDefault(r => r.Name == restaurant.Name);
+            if (existingRestaurant == null)
+            {
+                _context.Restaurants.Add(restaurant);
+            }
+            else
+            {
+                existingRestaurant.Address = restaurant.Address;
+                existingRestaurant.Phone = restaurant.Phone;
+                existingRestaurant.Description = restaurant.Description;
+                existingRestaurant.Image = restaurant.Image;
+            }
             }
 
-
-
+            _context.SaveChanges();
         }
 
         public HomeController(ResturantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
@@ -176,5 +216,91 @@ namespace OnlineBookingSystem.Controllers
             }
             return View(reservation);
         }
+
+        public async Task<IActionResult> ViewReservations()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var reservations = _context.Reservations.Where(r => r.CustId == Convert.ToInt32(user.Id)).ToList();
+
+            return View(reservations);
+        }
+
+        public IActionResult EditReservation(int id)
+        {
+            var reservation = _context.Reservations.Find(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            return View(reservation);
+        }
+
+        [HttpPost]
+        public IActionResult EditReservation(Reservation reservation)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Reservations.Update(reservation);
+                _context.SaveChanges();
+                return RedirectToAction("ViewReservations");
+            }
+
+            return View("MakeNewRes", reservation);
+        }
+
+        public IActionResult DeleteReservation(int id)
+        {
+            var reservation = _context.Reservations.Find(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            _context.Reservations.Remove(reservation);
+            _context.SaveChanges();
+
+            return RedirectToAction("ViewReservations");
+        }
+
+
+        //HttpGet for Profile.cshtml
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var model = new ProfileViewModel
+            {
+                Username = user.UserName,
+                Email = user.Email
+            };
+
+            return View(model);
+        }
+
+
+
+        // [HttpPost]
+        // public async Task<IActionResult> UploadPhoto(IFormFile photo)
+        // {
+        //     var user = await _userManager.GetUserAsync(User);
+        //     if (user == null)
+        //     {
+        //         return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+        //     }
+
+        //     // Save the photo and update the user's PhotoPath property
+
+        //     return RedirectToAction("Profile");
+        // }
     }
 }
