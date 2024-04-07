@@ -1,0 +1,25 @@
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1>@Model.Username's Profile</h1>
+
+            <p>Email: @Model.Email</p>
+
+            <img src="@Model.PhotoPath" alt="User photo" />
+
+            <form method="post" enctype="multipart/form-data" asp-action="UploadPhoto">
+                <div class="form-group">
+                    <label for="photo">Upload Photo</label>
+                    <input type="file" class="form-control-file" id="photo" name="photo" />
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Photo</button>
+            </form>
+        </div>
+    </div>
+</div>
