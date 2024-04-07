@@ -2,11 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Identity.Client;
+using Twilio;
+using Twilio.Rest.Verify.V2.Service;
 namespace OnlineBookingSystem.Controllers
 {
     public class HomeController : Controller
     {
-
+        private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
+        private string authToken = "f45e42925a26b1e65588038bfeb956c9";
         private readonly ResturantContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
@@ -30,9 +35,6 @@ namespace OnlineBookingSystem.Controllers
                 });
                 _context.SaveChanges();
             }
-
-
-
         }
 
         public HomeController(ResturantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
@@ -41,11 +43,13 @@ namespace OnlineBookingSystem.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             ResturantDatabaseInit();
+            TwilioClient.Init(accountSid, authToken);
         }
 
 
 
         //ViewResult for Index.cshtml, to be called when a button is clicked
+        [AllowAnonymous]
         public ViewResult Index()
         {
             return View("LoginPage"); //Bring user to starting login page
@@ -53,10 +57,12 @@ namespace OnlineBookingSystem.Controllers
 
         //HttpGet for Register.cshtml
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register() => View();
 
         //HttpPost for Register.cshtml
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -87,30 +93,40 @@ namespace OnlineBookingSystem.Controllers
         }
 
 
-
-        public IActionResult Dashboard()
+        [AllowAnonymous]
+        public IActionResult TwoFactor(Customer cust)
         {
-
-            return View(_context.Restaurants.ToList());
+            var verification = VerificationResource.Create(
+                to: "+1" + cust.Phone,
+                channel: "sms",
+                pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
+            );
         }
 
+        [Authorize]
+        public async Task<IActionResult> Dashboard()
+        {
+            return View(_context.Restaurants.ToList());
+        }
+        [Authorize]
         public IActionResult Reservations()
         {
             return View();
         }
-
+        [AllowAnonymous]
         public IActionResult LoginPage() => View(); //Get request for LoginPage.cshtml
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel account)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(account.UserName);
 
-                Debug.WriteLine(user);
-                var result = await _signInManager.CheckPasswordSignInAsync(user, account.Password, false);
-                Debug.WriteLine(result);
+
+                var result = await _signInManager.CheckPasswordSignInAsync(user, passwordHasher.HashPassword(new Customer() { TwoFactorEnabled = false }, account.Password), false);
+
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Dashboard", _context.Restaurants.ToList());
@@ -127,6 +143,7 @@ namespace OnlineBookingSystem.Controllers
         }
 
         //HttpGet for MakeNewRes.cshtml
+        [Authorize]
         public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
@@ -141,6 +158,7 @@ namespace OnlineBookingSystem.Controllers
 
         //HttpPost for MakeNewRes.cshtml
         [HttpPost]
+        [Authorize]
         public IActionResult MakeNewRes(Reservation reservation)
         {
             if (ModelState.IsValid)
