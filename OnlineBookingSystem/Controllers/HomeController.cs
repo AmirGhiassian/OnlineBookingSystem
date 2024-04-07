@@ -25,7 +25,7 @@ namespace OnlineBookingSystem.Controllers
                     Phone = "555-555-5555",
                     Description = "Fast Food",
                     Image = "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Big-Mac.jpg?$Product_Desktop$",
-                    reservedTimes = new Reservation[] { }
+                    reservedTimes = Array.Empty<Reservation>()
 
                 });
                 _context.SaveChanges();
