@@ -16,16 +16,16 @@ namespace OnlineBookingSystem
             builder.Services.AddControllersWithViews();
 
 
-            builder.Services.AddDefaultIdentity<Customer>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<OnlineBookingSystemIdentityDbContext>();
+            builder.Services.AddDefaultIdentity<Customer>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<IdentityContext>();
 
-            builder.Services.AddDbContext<DBContext>(opt =>
+            builder.Services.AddDbContext<ResturantContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("ResturantConnection"));
 
             });
 
-            builder.Services.AddDbContext<OnlineBookingSystemIdentityDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<IdentityContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
 
             var app = builder.Build();
