@@ -5,7 +5,7 @@ namespace OnlineBookingSystem.Models
     public class Feedback
     {
         [Key]
-        public int Id { get; set; }
+        public int FeedbackId { get; set; }
         [Required]
         public required string Name { get; set; }
 
