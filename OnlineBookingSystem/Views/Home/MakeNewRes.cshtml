@@ -10,12 +10,15 @@
 
 <body>
     @{
+        var isNew = Model == null;
+        var action = isNew ? "MakeNewRes" : "EditReservation";
         var restaurant = ViewBag.Restaurant as Restaurant;
+        var headingText = isNew ? "Make a Reservation" : "Edit Reservation";
     }
 
-    <h2 class="text-center my-4" style="color: #007bff;">Make a Reservation - @restaurant.Name</h2>
+    <h2 class="text-center my-4" style="color: #007bff;">@headingText - @restaurant.Name</h2>
     <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
-    <form method="POST" asp-action="MakeNewRes">
+    <form method="POST" asp-action="@action">
         <input asp-for="RestaurantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
         <div class="form-group">
             <label asp-for="Name">Name</label>
@@ -50,7 +53,7 @@
             <input asp-for="Price" class="form-control" readonly>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button> <!-- Submit button -->
+        <input type="submit" class="btn btn-primary" value="@(isNew ? "Create Reservation" : "Update Reservation")" /> <!-- Submit button -->
     </form>
 
     <!--- Script to calculate the price based on the time selected --->
