@@ -58,18 +58,18 @@ namespace OnlineBookingSystem.Controllers
 
             foreach (var restaurant in restaurants)
             {
-            var existingRestaurant = _context.Restaurants.FirstOrDefault(r => r.Name == restaurant.Name);
-            if (existingRestaurant == null)
-            {
-                _context.Restaurants.Add(restaurant);
-            }
-            else
-            {
-                existingRestaurant.Address = restaurant.Address;
-                existingRestaurant.Phone = restaurant.Phone;
-                existingRestaurant.Description = restaurant.Description;
-                existingRestaurant.Image = restaurant.Image;
-            }
+                var existingRestaurant = _context.Restaurants.FirstOrDefault(r => r.Name == restaurant.Name);
+                if (existingRestaurant == null)
+                {
+                    _context.Restaurants.Add(restaurant);
+                }
+                else
+                {
+                    existingRestaurant.Address = restaurant.Address;
+                    existingRestaurant.Phone = restaurant.Phone;
+                    existingRestaurant.Description = restaurant.Description;
+                    existingRestaurant.Image = restaurant.Image;
+                }
             }
 
             _context.SaveChanges();
@@ -272,7 +272,7 @@ namespace OnlineBookingSystem.Controllers
         //HttpGet for Profile.cshtml
         public async Task<IActionResult> Profile()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
