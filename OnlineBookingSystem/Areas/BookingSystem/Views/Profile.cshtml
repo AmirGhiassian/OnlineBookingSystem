@@ -1,0 +1,39 @@
+@model List<OnlineBookingSystem.Models.Reservation>
+
+<h2>Your Reservations</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Price</th>
+            <th>Party Size</th>
+            <th>Special Requests</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reservation in Model)
+        {
+            <tr>
+                <td>@reservation.Name</td>
+                <td>@reservation.Email</td>
+                <td>@reservation.Phone</td>
+                <td>@reservation.Date</td>
+                <td>@reservation.Time</td>
+                <td>@reservation.Price</td>
+                <td>@reservation.PartySize</td>
+                <td>@reservation.SpecialRequests</td>
+                <td>
+                    <form method="post" asp-action="GiveFeedback" asp-route-id="@reservation.ReservationId">
+                        <button type="submit" class="btn btn-primary">Give Feedback</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,35 @@
+@model List<OnlineBookingSystem.Models.Restaurant>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center my-4" style="color: #007bff;">Restaurant List</h2>
+
+        <div class="list-group">
+            @foreach (var restaurant in @Model)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">@restaurant.Name</h5>
+                        <small>@restaurant.Phone</small>
+                    </div>
+                    <p class="mb-1">@restaurant.Address</p>
+                    <p class="mb-1">@restaurant.Description</p>
+                    <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
+                    <br/>
+                    <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.ResturantId" class="btn btn-primary mt-4">Make a Reservation</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

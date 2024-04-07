@@ -1,0 +1,111 @@
+@model OnlineBookingSystem.Models.RegisterViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            font-size: 16px;
+            /* Base font size */
+        }
+
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* Prevents scrolling caused by oversized content */
+        }
+
+        .bg-image {
+            background-image: url('images/register_page.png');
+            /* Adjust if the image is different for registration */
+            height: 100%;
+            width: 100%;
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: -1;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 5rem;
+            /* Using rem for padding */
+            border-radius: 0.625rem;
+            /* 10px equivalent in rem */
+            height: auto;
+            /* Height adjusted dynamically */
+            width: auto;
+            /* Width set to auto for flexibility */
+            max-width: 50rem;
+            /* Increased max-width for a larger area, in rem */
+            background: #FFFFFF;
+            /* Solid white background */
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1), 0 0.375rem 1.25rem rgba(0, 0, 0, 0.19);
+            /* Shadow in rem */
+            z-index: 2;
+            /* Ensure it's above the bg-overlay */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="container form-container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mb-4">Register</h1>
+                <form asp-action="Register" method="post" asp-controller="IdentityController">
+                    <div class="form-group">
+                        <label asp-for="Username">User Name:</label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email">Email:</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password">Password:</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword">Confirm Password:</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
