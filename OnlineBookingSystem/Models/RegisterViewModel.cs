@@ -9,6 +9,9 @@ namespace OnlineBookingSystem.Models
         public string? Username { get; set; }
 
         [Required]
+        public string? PhoneNumber { get; set; }
+        
+        [Required]
         [EmailAddress]
         public required string? Email { get; set; }
 

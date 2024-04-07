@@ -1,0 +1,37 @@
+@model OnlineBookingSystem.Models.TwoFactorCodeViewModel
+@{
+    ViewData["Title"] = "Two Factor Authentication";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Two Factor Authentication Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Your existing CSS here -->
+</head>
+
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="container form-container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mb-4">Two Factor Authentication</h1>
+                <p class="text-center">Please check your phone for a code.</p>
+                <form method="post" asp-action="VerifyTwoFactorCode" asp-controller="Home">
+                    <div class="form-group">
+                        <label asp-for="code">Two Factor Code:</label>
+                        <input asp-for="code" type="text" id="TwoFactorCode" name="TwoFactorCode" class="form-control"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Verify</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

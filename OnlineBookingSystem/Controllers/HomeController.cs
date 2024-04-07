@@ -15,7 +15,8 @@ namespace OnlineBookingSystem.Controllers
         private readonly ResturantContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
-
+        private Random random = new Random();
+        private int randomNumber;
         private PasswordHasher<Customer> passwordHasher = new PasswordHasher<Customer>();
 
 
@@ -75,7 +76,16 @@ namespace OnlineBookingSystem.Controllers
                 }
 
                 // Create a new IdentityUser object with the user's username and email
-                var result = await _userManager.CreateAsync(new Customer() { UserName = model.Username, Email = model.Email, Reservations = new List<Reservation>(), PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password) });
+                var result = await _userManager.CreateAsync(new Customer()
+                {
+                    UserName = model.Username,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Reservations = new List<Reservation>(),
+                    PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
+                    LockoutEnabled = false,
+                    TwoFactorEnabled = true
+                });
 
                 if (result.Succeeded)
                 {
@@ -94,15 +104,50 @@ namespace OnlineBookingSystem.Controllers
 
 
         [AllowAnonymous]
+        [HttpGet]
         public IActionResult TwoFactor(Customer cust)
         {
-            var verification = VerificationResource.Create(
-                to: "+1" + cust.Phone,
-                channel: "sms",
-                pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
-            );
+
+            randomNumber = random.Next(100000, 999999);
+
+            VerificationResource.Create(
+            to: $"+1{cust.PhoneNumber}",
+            channel: "sms",
+            pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
+        );
+
+            VerificationCheckResource.Create(
+                 to: $"+1{cust.PhoneNumber}",
+                 code: randomNumber.ToString(),
+                 pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
+             );
+
+            return View();
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> TwoFactor(TwoFactorCodeViewModel code)
+        {
+            if (ModelState.IsValid)
+            {
+                if (code.code == randomNumber.ToString())
+                {
+                    var result = await _signInManager.TwoFactorSignInAsync("Phone", code.code, isPersistent: false, rememberClient: false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Dashboard");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid Code");
+                        return View();
+                    }
+                }
+
+            }
+            return View();
+        }
         [Authorize]
         public async Task<IActionResult> Dashboard()
         {
@@ -118,18 +163,36 @@ namespace OnlineBookingSystem.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel account)
+        public async Task<IActionResult> LoginPage(LoginViewModel account)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(account.UserName);
 
-
-                var result = await _signInManager.CheckPasswordSignInAsync(user, passwordHasher.HashPassword(new Customer() { TwoFactorEnabled = false }, account.Password), false);
-
-                if (result.Succeeded)
+                var verificationResult = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, account.Password);
+                if (verificationResult == PasswordVerificationResult.Success)
                 {
-                    return RedirectToAction("Dashboard", _context.Restaurants.ToList());
+                    // Check if the user has two-factor authentication enabled
+                    if (await _userManager.GetTwoFactorEnabledAsync(user))
+                    {
+                        // Generate and send the two-factor code, then redirect the user to the TwoFactor action
+                        // ...
+                        return RedirectToAction("TwoFactor", user);
+                    }
+                    else
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(user, account.Password, false, lockoutOnFailure: false);
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction("Dashboard", _context.Restaurants.ToList());
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Invalid Login Attempt");
+                            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                            return View("LoginPage");
+                        }
+                    }
                 }
                 else
                 {
@@ -141,7 +204,6 @@ namespace OnlineBookingSystem.Controllers
             Debug.WriteLine("Invalid Login Attempt");
             return View("LoginPage");
         }
-
         //HttpGet for MakeNewRes.cshtml
         [Authorize]
         public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID

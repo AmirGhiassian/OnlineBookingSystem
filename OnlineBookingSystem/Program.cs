@@ -14,7 +14,7 @@ namespace OnlineBookingSystem
     {
         public static void Main(string[] args)
         {
-            
+
 
             var builder = WebApplication.CreateBuilder(args);
 
@@ -48,11 +48,7 @@ namespace OnlineBookingSystem
             builder.Services.AddDbContext<IdentityContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequiredTwoFactorAuth", policy =>
-                    policy.
-            });
+
             var app = builder.Build();
             app.UseHttpsRedirection();
 
