@@ -1,22 +1,22 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnlineBookingSystem.Models;
-using Microsoft.AspNetCore.Identity;
-namespace OnlineBookingSystem
+
+namespace OnlineBookingSystem.Areas.Identity.Data;
+
+public class IdentityContext : IdentityDbContext<Customer>
 {
-
-    public class ResturantContext : DbContext
+    public IdentityContext(DbContextOptions<IdentityContext> options)
+        : base(options)
     {
-        public ResturantContext(DbContextOptions<ResturantContext> options) : base(options)
-        { }
 
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<Feedback> Feedbacks { get; set; }
-        public DbSet<Restaurant> Restaurants { get; set; }
+    }
 
-
-        public DbSet<IdentityRole> Roles { get; set; }
-
-
-
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        // Customize the ASP.NET Identity model and override the defaults if needed.
+        // For example, you can rename the ASP.NET Identity table names and more.
+        // Add your customizations after calling base.OnModelCreating(builder);
     }
 }
