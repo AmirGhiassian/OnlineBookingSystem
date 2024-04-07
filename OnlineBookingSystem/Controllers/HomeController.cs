@@ -7,13 +7,13 @@ namespace OnlineBookingSystem.Controllers
     public class HomeController : Controller
     {
 
-        private readonly DBContext _context; //Singleton Database Context
+        private readonly ResturantContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
 
         private PasswordHasher<Customer> passwordHasher = new PasswordHasher<Customer>();
 
-        public HomeController(DBContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
+        public HomeController(ResturantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
             _context = context;
             _userManager = userManager;
