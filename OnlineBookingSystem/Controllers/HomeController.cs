@@ -13,11 +13,34 @@ namespace OnlineBookingSystem.Controllers
 
         private PasswordHasher<Customer> passwordHasher = new PasswordHasher<Customer>();
 
+
+        private void ResturantDatabaseInit()
+        {
+            if (_context.Restaurants.Count() == 0)
+            {
+                _context.Restaurants.Add(new Restaurant
+                {
+                    Name = "McDonalds",
+                    Address = "1234 Main St",
+                    Phone = "555-555-5555",
+                    Description = "Fast Food",
+                    Image = "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Big-Mac.jpg?$Product_Desktop$",
+                    reservedTimes = new Reservation[] { }
+
+                });
+                _context.SaveChanges();
+            }
+
+
+
+        }
+
         public HomeController(ResturantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            ResturantDatabaseInit();
         }
 
 
