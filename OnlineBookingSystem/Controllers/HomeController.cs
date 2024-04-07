@@ -127,7 +127,7 @@ namespace OnlineBookingSystem.Controllers
                     Reservations = new List<Reservation>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
-                    TwoFactorEnabled = true // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
+                    TwoFactorEnabled = false // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
                 });
 
                 if (result.Succeeded)
@@ -293,6 +293,13 @@ namespace OnlineBookingSystem.Controllers
                 // Add the price for guests
                 reservation.Price += reservation.PartySize * 1.50;
 
+                // Set the RestaurantName property
+                var restaurant = _context.Restaurants.FirstOrDefault(r => r.Name == reservation.RestaurantName);
+                if (restaurant != null)
+                {
+                    reservation.RestaurantName = restaurant.Name;
+                }
+
                 _context.Reservations.Add(reservation);
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard");
@@ -300,7 +307,7 @@ namespace OnlineBookingSystem.Controllers
             return View(reservation);
         }
 
-        public async Task<IActionResult> ViewReservations()
+        public async Task<IActionResult> ViewReservation()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -308,12 +315,19 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var reservations = _context.Reservations.Where(r => r.CustId == Convert.ToInt32(user.Id)).ToList();
+            var customer = user as Customer;
+            if (customer == null)
+            {
+                return NotFound("The user is not a customer.");
+            }
+
+            var reservations = _context.Reservations.Where(r => r.CustId == customer.CustID).ToList();
 
             return View(reservations);
         }
 
-        public IActionResult EditReservation(int id)
+
+        public async Task<IActionResult> EditReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
             if (reservation == null)
@@ -337,7 +351,7 @@ namespace OnlineBookingSystem.Controllers
             return View("MakeNewRes", reservation);
         }
 
-        public IActionResult DeleteReservation(int id)
+        public IActionResult DeleteReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
             if (reservation == null)
@@ -348,7 +362,7 @@ namespace OnlineBookingSystem.Controllers
             _context.Reservations.Remove(reservation);
             _context.SaveChanges();
 
-            return RedirectToAction("ViewReservations");
+            return RedirectToAction("ViewReservation");
         }
 
 
@@ -370,6 +384,13 @@ namespace OnlineBookingSystem.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")] 
+        public IActionResult UserManagement()
+        {
+            
+            var users = _userManager.Users.ToList(); 
+            return View(users);
+        }
 
 
         // [HttpPost]
