@@ -2,6 +2,9 @@ using OnlineBookingSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using OnlineBookingSystem.Areas.Identity.Data;
+using Microsoft.Extensions.Options;
+using Twilio;
+using Twilio.Rest.Verify.V2.Service;
 
 
 namespace OnlineBookingSystem
@@ -11,12 +14,30 @@ namespace OnlineBookingSystem
     {
         public static void Main(string[] args)
         {
+            
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddDefaultIdentity<Customer>(options =>
+            {
 
-            builder.Services.AddDefaultIdentity<Customer>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<IdentityContext>();
+                //Different options can be set here
+
+                // options.SignIn.RequireConfirmedAccount = false;
+                // options.SignIn.RequireConfirmedEmail = false;
+                // options.SignIn.RequireConfirmedPhoneNumber = false;
+                // options.User.RequireUniqueEmail = true;
+                // options.Lockout.AllowedForNewUsers = true;
+                // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                // options.Lockout.MaxFailedAccessAttempts = 5;
+                // options.Password.RequireDigit = true;
+                // options.Password.RequireLowercase = true;
+                // options.Password.RequireNonAlphanumeric = true;
+                // options.Password.RequireUppercase = true;
+                // options.Password.RequiredLength = 8;
+            }).AddEntityFrameworkStores<IdentityContext>();
 
             builder.Services.AddDbContext<ResturantContext>(opt =>
             {
@@ -27,7 +48,11 @@ namespace OnlineBookingSystem
             builder.Services.AddDbContext<IdentityContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
-
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequiredTwoFactorAuth", policy =>
+                    policy.
+            });
             var app = builder.Build();
             app.UseHttpsRedirection();
 
@@ -38,7 +63,7 @@ namespace OnlineBookingSystem
 
             app.MapDefaultControllerRoute();
 
-
+            app.UseAuthorization();
             app.Run();
 
 
