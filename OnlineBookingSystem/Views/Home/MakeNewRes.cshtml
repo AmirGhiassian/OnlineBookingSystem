@@ -67,7 +67,7 @@
                     price = 10; // Breakfast price
                 } else if (hour >= 12 && hour < 18) {
                     price = 20; // Lunch price
-                } else if (hour >= 18 && hour <= 23){
+                } else if (hour >= 18 && hour <= 23) {
                     price = 30; // Dinner price
                 } else {
                     price = 0; // Invalid time
@@ -76,7 +76,7 @@
                 var guestPrice = guests * 1.50; // Calculate the price for guests
                 price += guestPrice; // Add the guest price to the base price
 
-                priceField.val('$' + price.toFixed(2)); // Set the price field value with 2 decimal points
+                priceField.val(price.toFixed(2)); // Set the price field value with 2 decimal points
             });
 
             // Handle form validation
