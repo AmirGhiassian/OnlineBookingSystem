@@ -127,7 +127,7 @@ namespace OnlineBookingSystem.Controllers
                     Reservations = new List<Reservation>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
-                    TwoFactorEnabled = true
+                    TwoFactorEnabled = true // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
                 });
 
                 if (result.Succeeded)
