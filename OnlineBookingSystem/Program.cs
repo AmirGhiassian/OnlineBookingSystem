@@ -51,9 +51,8 @@ namespace OnlineBookingSystem
 
             var app = builder.Build();
             app.UseHttpsRedirection();
-
-            //We might not need this, so commented out
-            //app.UseStaticFiles();
+            
+            app.UseStaticFiles();
 
             app.UseRouting();
 
