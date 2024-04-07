@@ -20,6 +20,7 @@
     <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
     <form method="POST" asp-action="@action">
         <input asp-for="RestaurantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
+        <input asp-for="RestaurantName" type="hidden" value="@TempData["RestaurantName"]" /> <!-- Hidden field for RestaurantName -->
         <div class="form-group">
             <label asp-for="Name">Name</label>
             <input asp-for="Name" class="form-control" required>
@@ -53,7 +54,7 @@
             <input asp-for="Price" class="form-control" readonly>
         </div>
 
-        <input type="submit" class="btn btn-primary" value="@(isNew ? "Create Reservation" : "Update Reservation")" /> <!-- Submit button -->
+        <input type="submit" class="btn btn-primary" value='@(isNew ? "Create Reservation" : "Update Reservation")' /> <!-- Submit button -->
     </form>
 
     <!--- Script to calculate the price based on the time selected --->

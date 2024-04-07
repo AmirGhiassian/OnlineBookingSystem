@@ -22,12 +22,18 @@
                     <p class="mb-1">@restaurant.Address</p>
                     <p class="mb-1">@restaurant.Description</p>
                     <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
-                    <br/>
-                    <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.ResturantId" class="btn btn-primary mt-4">Make a Reservation</a>
+                    <br />
+                    <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.ResturantId" class="btn btn-primary mt-4"
+                        onclick="saveRestaurantName('@restaurant.Name')">Make a Reservation</a>
                 </div>
             }
         </div>
     </div>
+    <script>
+        function saveRestaurantName(name) {
+            "@TempData["RestaurantName"]" = name;
+        }
+    </script>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

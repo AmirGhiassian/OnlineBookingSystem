@@ -7,8 +7,13 @@ namespace OnlineBookingSystem.Models
     {
         [Key]
         public int ReservationId { get; set; }
+
         [ForeignKey("Restaurant")]
         public int RestaurantId { get; set; } //Foreign key to the restaurant where the reservation is made
+
+        [ForeignKey("Restaurant")]
+        public string RestaurantName { get; set; } //Name of the restaurant where the reservation is made
+
         [ForeignKey("Customer")]
         public int CustId { get; set; } //Foreign key to the customer who made the reservation
         [Required]
