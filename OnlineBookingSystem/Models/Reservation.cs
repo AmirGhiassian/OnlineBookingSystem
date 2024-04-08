@@ -1,8 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+/// <summary>
+/// Author: Daniel O'Brien
+/// This class defines a model for managing reservations within an Online Booking System, 
+/// encapsulating details such as reservation date, time, party size, and contact information.
+/// It includes validation for required fields and a method to check if any essential reservation information is missing.
+/// </summary>
+
+
 namespace OnlineBookingSystem.Models
 {
+    /// <summary>
+    /// Model class for a single reservation, used for storing reservation information within the database of reservations
+    /// </summary>
     public class Reservation
     {
         [Key]
@@ -25,6 +36,13 @@ namespace OnlineBookingSystem.Models
         public int PartySize { get; set; }
         public string? SpecialRequests { get; set; } //Optional field
 
+        /// <summary>
+        /// Method to check if any essential reservation information is missing.
+        /// </summary>
+        /// <returns>
+        /// Returns true if any of the essential information (Name, Email, Phone, Date, Time, PartySize) is null of zero (for PartySize).
+        /// Otherwise, returns false.
+        /// </returns>
         public bool isEmpty()
         {
             if (Name == null || Email == null || Phone == null || Date == null || Time == null || PartySize == 0)
