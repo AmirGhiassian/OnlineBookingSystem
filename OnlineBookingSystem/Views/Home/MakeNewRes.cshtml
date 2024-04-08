@@ -14,7 +14,7 @@
         var headingText = Model.Reservation == null? "Make a Reservation" : "Edit Reservation";
     }
 
-    <h2 class="text-center my-4" style="color: #007bff;">Make New Reservation - @Model.Restaurant.Name</h2>
+    <h2 class="text-center my-4" style="color: #007bff;">@action - @Model.Restaurant.Name</h2>
     <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
     <form method="POST" asp-action="@action">
         <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
