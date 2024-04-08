@@ -13,7 +13,7 @@ namespace OnlineBookingSystem.Controllers
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
         private string authToken = "f45e42925a26b1e65588038bfeb956c9";
-        private readonly ResturantContext _context; //Singleton Database Context
+        private readonly RestaurantContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
         private Random random = new Random();
@@ -82,7 +82,7 @@ namespace OnlineBookingSystem.Controllers
             _context.SaveChanges();
         }
 
-        public HomeController(ResturantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
+        public HomeController(RestaurantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
             _context = context;
             _userManager = userManager;

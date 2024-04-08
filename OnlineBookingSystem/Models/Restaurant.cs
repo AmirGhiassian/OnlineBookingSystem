@@ -5,7 +5,7 @@ namespace OnlineBookingSystem.Models
     public class Restaurant
     {
         [Key]
-        public int ResturantId { get; set; }
+        public int RestaurantId { get; set; }
 
         [Required]
         public string? Name { get; set; }

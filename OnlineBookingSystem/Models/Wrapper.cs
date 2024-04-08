@@ -6,7 +6,7 @@ namespace OnlineBookingSystem.Models
         public Feedback Feedback { get; set; }
         public Reservation Reservation { get; set; }
         public Restaurant Restaurant { get; set; }
-        public ResturantContext _dbContext { get; set; }
+        public RestaurantContext _dbContext { get; set; }
 
         public Customer Customer { get; set; }
 
@@ -60,7 +60,7 @@ namespace OnlineBookingSystem.Models
             Restaurants = restaurants;
         }
 
-        public Wrapper(ResturantContext dbContext)
+        public Wrapper(RestaurantContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 namespace OnlineBookingSystem.Models
 {
 
-    public class ResturantContext : DbContext
+    public class RestaurantContext : DbContext
     {
-        public ResturantContext(DbContextOptions<ResturantContext> options) : base(options)
+        public RestaurantContext(DbContextOptions<RestaurantContext> options) : base(options)
         { }
 
         public DbSet<Reservation> Reservations { get; set; }

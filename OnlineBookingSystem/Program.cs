@@ -39,7 +39,7 @@ namespace OnlineBookingSystem
                 // options.Password.RequiredLength = 8;
             }).AddEntityFrameworkStores<IdentityContext>();
 
-            builder.Services.AddDbContext<ResturantContext>(opt =>
+            builder.Services.AddDbContext<RestaurantContext>(opt =>
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("ResturantConnection"));
 
@@ -51,7 +51,7 @@ namespace OnlineBookingSystem
 
             var app = builder.Build();
             app.UseHttpsRedirection();
-            
+
             app.UseStaticFiles();
 
             app.UseRouting();

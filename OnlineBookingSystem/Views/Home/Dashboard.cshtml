@@ -12,7 +12,7 @@
         <h2 class="text-center my-4" style="color: #007bff;">Restaurant List</h2>
 
         <div class="list-group">
-            @foreach (var restaurant in @Model)
+            @foreach (var restaurant in Model)
             {
                 <div class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
@@ -23,17 +23,12 @@
                     <p class="mb-1">@restaurant.Description</p>
                     <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
                     <br />
-                    <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.ResturantId" class="btn btn-primary mt-4"
-                        onclick="saveRestaurantName('@restaurant.Name')">Make a Reservation</a>
+                    <a asp-action="MakeNewRes" asp-route="@restaurant.RestaurantId"></a>
                 </div>
             }
         </div>
     </div>
-    <script>
-        function saveRestaurantName(name) {
-            "@TempData["RestaurantName"]" = name;
-        }
-    </script>
+
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
