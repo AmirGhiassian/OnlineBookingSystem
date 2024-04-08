@@ -379,7 +379,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the return is successful it returns a wrapper object of a new Reservation and the restaurant with the needed restaurant id
         /// </returns>
 
-        public async Task<IActionResult> MakeNewRes(int restaurantId) //Get the restaurant ID
+        public async Task<IActionResult> MakeNewRes(int? restaurantId, int? reservationId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
 
@@ -388,8 +388,18 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
 
+            Reservation reservation;
+            if (reservationId.HasValue)
+            {
+                //If a reservation id is provided, find the reservation with the given ID
+                reservation = _context.Reservations.Find(reservationId);
+            }
+            else
+            {   //If no reservation id is provided, create a new reservation object
+                reservation = new Reservation();
+            }
 
-            return View(new Wrapper(new Reservation(), restaurant, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))); //Return the view
+            return View(new Wrapper(reservation, restaurant, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))); //Return the view
         }
 
 
@@ -398,6 +408,8 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP POST request for the MakeNewRes view.
         /// It validates the model state, calculates the price based on the reservation time and party size,
         /// and adds the reservation to the database.
+        /// This method also allows users to edit their previously made reservations, and determines if the 
+        /// reservation has already been made, allowing editing to occur. It then saves the changes to the database.
         /// </summary>
         /// <param name="Reservation"></param>
         /// <returns>
@@ -406,7 +418,6 @@ namespace OnlineBookingSystem.Controllers
         ///     2. The restaurant object
         /// </returns>
         [HttpPost]
-
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
             if (ModelState.IsValid)
@@ -433,13 +444,22 @@ namespace OnlineBookingSystem.Controllers
                     }
                 }
 
-
                 // Add the price for guests
                 Reservation.Price += Reservation.PartySize * 1.50;
+                // Check if a reservation with the same ID already exists
+                var existingReservation = _context.Reservations.FirstOrDefault(r => r.ReservationId == Reservation.ReservationId);
+                if (existingReservation != null)
+                {
+                    // Update the existing reservation
+                    _context.Entry(existingReservation).CurrentValues.SetValues(Reservation);
+                }
+                else
+                {
+                    // Add the new reservation
+                    _context.Reservations.Add(Reservation);
+                }
 
-
-                _context.Reservations.Add(Reservation);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Dashboard");
             }
             return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))));
@@ -480,7 +500,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the reservation is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns the reservation object
         /// </returns>
-        public async Task<IActionResult> EditReservation(string id)
+        public async Task<IActionResult> EditReservation(int id)
         {
             var reservation = _context.Reservations.Find(id);
             if (reservation == null)
@@ -508,10 +528,10 @@ namespace OnlineBookingSystem.Controllers
             {
                 _context.Reservations.Update(reservation);
                 _context.SaveChanges();
-                return RedirectToAction("ViewReservations");
+                return RedirectToAction("Dashboard");
             }
 
-            return View("MakeNewRes", reservation);
+            return View(reservation);
         }
 
         /// <summary>
