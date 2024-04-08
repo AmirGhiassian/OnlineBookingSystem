@@ -14,8 +14,8 @@ namespace OnlineBookingSystem.Models
                 context.Result = new RedirectToRouteResult(
                     new RouteValueDictionary
                     {
-                        { "controller", "Account" },
-                        { "action", "Login" }
+                        { "controller", "Home" },
+                        { "action", "LoginPage" }
                     });
             }
         }
