@@ -60,6 +60,16 @@ namespace OnlineBookingSystem.Models
         }
 
         /// <summary>
+        /// Author: Eric Hanoun
+        /// Initializes a new instance of the Wrapper class with a list of reservations and a list of restaurants.
+        /// </summary>
+        public Wrapper(List<Reservation> reservations, List<Restaurant> restaurants)
+        {
+            Reservations = reservations;
+            Restaurants = restaurants;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the Wrapper class with a reservation, a restaurant, and a customer.
         /// </summary>
         /// <param name="reservation">The reservation instance.</param>

@@ -475,7 +475,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound("The user is not a customer.");
             }
 
-            return View(_context.Reservations.ToList());
+            return View(new Wrapper(_context.Reservations.ToList(), _context.Restaurants.ToList()));
         }
 
         /// <summary>

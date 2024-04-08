@@ -5,6 +5,28 @@
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        .restaurant-image {
+            width: 400px;
+            height: auto;
+            object-fit: contain;
+            border: 1px solid #000;
+        }
+
+        body {
+        background-color: #f0f8ff;
+    }
+    .restaurant-card {
+        box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+        transition: 0.3s;
+        border-radius: 0.3125rem; /* 5px */
+    }
+    .restaurant-card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+    }
+        
+    </style>
 </head>
 
 <body>
@@ -14,18 +36,19 @@
         <div class="list-group">
             @foreach (var restaurant in Model)
             {
-                <div class="list-group-item">
+                <div class="list-group-item restaurant-card">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">@restaurant.Name</h5>
-                        <small>@restaurant.Phone</small>
-                    </div>
-                    <p class="mb-1">@restaurant.Address</p>
-                    <p class="mb-1">@restaurant.Description</p>
-                    <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
+                    <h2 class="mb-1">@restaurant.Name</h2> <!-- Changed h5 to h2 to make the name bigger -->
+                    <small style="font-size: 0.8rem;">@restaurant.Phone</small> <!-- Adjusted the font size to make the phone number smaller -->
+                </div>
+                    <p class="mb-1" style="font-size: 0.9rem;">@restaurant.Address</p> 
+                    <p class="mb-1" style="font-size: 0.9rem;">@restaurant.Description</p> 
+                    <img src="@restaurant.Image" class="img-fluid restaurant-image d-block" alt="Restaurant Image">
                     <br />
                     <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.RestaurantId"
                         class="btn btn-primary">Make Reservation</a>
                 </div>
+                <br/>
             }
         </div>
     </div>

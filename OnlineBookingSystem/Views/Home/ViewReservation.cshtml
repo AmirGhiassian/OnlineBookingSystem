@@ -1,5 +1,5 @@
 @using Microsoft.EntityFrameworkCore
-@model List<OnlineBookingSystem.Models.Reservation>
+@model OnlineBookingSystem.Models.Wrapper
 
 <!DOCTYPE html>
 <html>
@@ -53,17 +53,21 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            @foreach (var reservation in Model)
+
+            @foreach (var reservation in Model.Reservations)
             {
+                var restaurant = Model.Restaurants.FirstOrDefault(r => r.RestaurantId == reservation.RestaurantId);
                 <div class="col-md-6 d-flex align-items-stretch">
                     <div class="card mb-3 w-100">
                         <div class="card-body">
-                            <h2 class="card-title">@reservation.RestaurantId</h2>
-                            <h3 class="card-text">@_context.Restaurants.FirstOrDefaultAsync(rest => rest.RestaurantId ==
-                            reservation.RestaurantId)</h3>
-                            <p class="card-text">@reservation.Date @reservation.Time</p>
+                            @if (restaurant != null)
+                            {
+                                <h2 class="card-title">@restaurant.Name</h2>
+                                <h3 class="card-text">@restaurant.Description</h3>
+                            }
+                            <p class="card-text">Date: @reservation.Date  <br/> Time: @reservation.Time</p>
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <a class="btn btn-primary mb-2" asp-action="EditReservation"
+                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes"
                                     asp-route-id="@reservation.ReservationId">Edit</a>
                                 <form asp-action="DeleteReservation" asp-route-id="@reservation.ReservationId"
                                     method="post">
