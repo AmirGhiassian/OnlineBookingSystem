@@ -20,10 +20,10 @@
             <div class="col">
                 <h1 class="text-center mb-4">Two Factor Authentication</h1>
                 <p class="text-center">Please check your phone for a code.</p>
-                <form method="post" asp-action="VerifyTwoFactorCode" asp-controller="Home">
+                <form method="post" asp-action="TwoFactor">
                     <div class="form-group">
                         <label asp-for="code">Two Factor Code:</label>
-                        <input asp-for="code" type="text" id="TwoFactorCode" name="TwoFactorCode" class="form-control"
+                        <input asp-for="code" type="text" id="code" name="TwoFactorCode" class="form-control"
                             required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Verify</button>

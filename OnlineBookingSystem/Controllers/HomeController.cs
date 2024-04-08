@@ -37,6 +37,7 @@ namespace OnlineBookingSystem.Controllers
         /// Initializes the database with a set of default restaurants if they do not already exist.
         /// This method is called when the HomeController is created.
         /// </summary>
+
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -167,7 +168,7 @@ namespace OnlineBookingSystem.Controllers
                     Reservations = new List<int>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
-                    TwoFactorEnabled = false // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
+                    TwoFactorEnabled = true // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
                 });
 
                 if (result.Succeeded)
@@ -195,8 +196,9 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>
         /// Returns the view for two-factor authentication.
         /// </returns>
-        [AllowAnonymous]
+
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult TwoFactor(Customer cust)
         {
 
@@ -419,6 +421,7 @@ namespace OnlineBookingSystem.Controllers
         /// If teh user is not a customer, the profile returns an error, user is not a customer
         /// Other wise, the list of reservations is returned to the list of reservations view
         /// </returns>
+        [Authorize]
         public async Task<IActionResult> ViewReservation()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -445,6 +448,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the reservation is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns the reservation object
         /// </returns>
+        [Authorize]
         public async Task<IActionResult> EditReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -467,6 +471,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the model state is invalid, the user is returned to the EditReservation view with the reservation object.
         /// </returns>
         [HttpPost]
+        [Authorize]
         public IActionResult EditReservation(Reservation reservation)
         {
             if (ModelState.IsValid)
@@ -488,6 +493,8 @@ namespace OnlineBookingSystem.Controllers
         /// if the reservation is not found, returns NotFound, 
         /// if it is found, deletes it and returns the ViewReservation again
         /// </returns>
+
+        [Authorize]
         public IActionResult DeleteReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -511,6 +518,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the user is not found, the profile retuns an error, user not found
         /// If the return is successful it returns the profile view model
         /// </returns>
+        [Authorize]
         public async Task<IActionResult> Profile()
         {
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
