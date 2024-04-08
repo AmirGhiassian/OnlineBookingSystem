@@ -13,6 +13,19 @@
             object-fit: contain;
             border: 1px solid #000;
         }
+
+        body {
+    padding-top: 1.25rem; /* 20px */
+    background-color: #f0f8ff;
+    }
+    .restaurant-card {
+        box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+        transition: 0.3s;
+        border-radius: 0.3125rem; /* 5px */
+    }
+    .restaurant-card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+    }
         
     </style>
 </head>
@@ -24,7 +37,7 @@
         <div class="list-group">
             @foreach (var restaurant in Model)
             {
-                <div class="list-group-item">
+                <div class="list-group-item restaurant-card">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">@restaurant.Name</h5>
                         <small>@restaurant.Phone</small>
