@@ -543,9 +543,9 @@ namespace OnlineBookingSystem.Controllers
         /// if the reservation is not found, returns NotFound, 
         /// if it is found, deletes it and returns the ViewReservation again
         /// </returns>
-        public IActionResult DeleteReservation(string id)
+        public IActionResult DeleteReservation(int reservationid)
         {
-            var reservation = _context.Reservations.Find(id);
+            var reservation = _context.Reservations.Find(reservationid);
             if (reservation == null)
             {
                 return NotFound();
@@ -603,6 +603,13 @@ namespace OnlineBookingSystem.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP POST request for the FeedbackForm view.
+        /// It validates the model state, adds the feedback to the database, and redirects to the ViewReservations view.
+        /// </summary>
+        /// <param name="feedback"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult SubmitFeedback(Feedback feedback)
         {
