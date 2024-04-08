@@ -23,10 +23,10 @@
                 <form method="post" asp-action="TwoFactor">
                     <div class="form-group">
                         <label asp-for="code">Two Factor Code:</label>
-                        <input asp-for="code" type="text" id="code" name="TwoFactorCode" class="form-control"
-                            required>
+                        <input asp-for="code" type="text" id="code" name="code" class="form-control" required>
+                        <button type="submit" class="btn btn-primary w-100">Verify</button>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Verify</button>
+
                 </form>
             </div>
         </div>
