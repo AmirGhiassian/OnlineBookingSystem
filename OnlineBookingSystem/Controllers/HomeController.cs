@@ -3,11 +3,8 @@ using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Identity.Client;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 /// <summary>
 /// Author: Amir Ghiassian
@@ -24,7 +21,7 @@ namespace OnlineBookingSystem.Controllers
     /// </summary>
     /// 
 
-    [Authorize]
+    [RedirectToLoginIfNotAuthorized]
     public class HomeController : Controller
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
@@ -46,44 +43,44 @@ namespace OnlineBookingSystem.Controllers
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
-            {
-            new Restaurant
-            {
-                Name = "McDonalds",
-                Address = "1234 Main St",
-                Phone = "134-386-9753",
-                Description = "Best and most popular fast food restaurant in the world.",
-                Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2",
-                reservations = new List<Reservation>()
-            },
-            new Restaurant
-            {
-                Name = "Burger King",
-                Address = "5678 Main St",
-                Phone = "905-072-9075",
-                Description = "Customizable burgers and sandwiches.",
-                Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg",
-                reservations = new List<Reservation>()
-            },
-            new Restaurant
-            {
-                Name = "Wendy's",
-                Address = "9101 Main St",
-                Phone = "905-783-8453",
-                Description = "Fresh, never frozen beef burgers.",
-                Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s",
-                reservations = new List<Reservation>()
-            },
-            new Restaurant
-            {
-                Name = "Taco Bell",
-                Address = "1122 Main St",
-                Phone = "238-493-8652",
-                Description = "Mexican-inspired fast food.",
-                Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg",
-                reservations = new List<Reservation>()
-            }
-            };
+                {
+                new Restaurant
+                {
+                    Name = "McDonalds",
+                    Address = "1234 Main St",
+                    Phone = "134-386-9753",
+                    Description = "Best and most popular fast food restaurant in the world.",
+                    Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2",
+                    reservations = new List<Reservation>()
+                },
+                new Restaurant
+                {
+                    Name = "Burger King",
+                    Address = "5678 Main St",
+                    Phone = "905-072-9075",
+                    Description = "Customizable burgers and sandwiches.",
+                    Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg",
+                    reservations = new List<Reservation>()
+                },
+                new Restaurant
+                {
+                    Name = "Wendy's",
+                    Address = "9101 Main St",
+                    Phone = "905-783-8453",
+                    Description = "Fresh, never frozen beef burgers.",
+                    Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s",
+                    reservations = new List<Reservation>()
+                },
+                new Restaurant
+                {
+                    Name = "Taco Bell",
+                    Address = "1122 Main St",
+                    Phone = "238-493-8652",
+                    Description = "Mexican-inspired fast food.",
+                    Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg",
+                    reservations = new List<Reservation>()
+                }
+                };
 
             foreach (var restaurant in restaurants)
             {
@@ -116,8 +113,18 @@ namespace OnlineBookingSystem.Controllers
             _signInManager = signInManager;
             ResturantDatabaseInit();
             TwilioClient.Init(accountSid, authToken);
+            
+
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _signInManager.SignOutAsync().GetAwaiter().GetResult();
+            }
+            base.Dispose(disposing);
+        }
 
 
         /// <summary>
@@ -243,10 +250,10 @@ namespace OnlineBookingSystem.Controllers
             {
                 var PhoneNumber = authData["PhoneNumber"].ToString();
                 var result = VerificationCheckResource.Create(
-                      to: $"+1{PhoneNumber}",
-                      code: codeEntered.code,
-                      pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
-                  );
+                    to: $"+1{PhoneNumber}",
+                    code: codeEntered.code,
+                    pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
+                );
                 if (result.Status == "approved")
                 {
                     var user = await _userManager.FindByNameAsync(authData["UserName"].ToString());
