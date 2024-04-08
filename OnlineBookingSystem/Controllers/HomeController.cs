@@ -113,19 +113,38 @@ namespace OnlineBookingSystem.Controllers
 
 
 
-        //ViewResult for Index.cshtml, to be called when a button is clicked
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// </summary>
+        /// <returns> returns a view with the Login Page as the default page to show on startup</returns>
         [AllowAnonymous]
         public ViewResult Index()
         {
             return View("LoginPage"); //Bring user to starting login page
         }
 
-        //HttpGet for Register.cshtml
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// HttpGet method for Register.cshtml
+        /// </summary>
+        /// <returns> returns a default view for the register page </returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register() => View();
 
-        //HttpPost for Register.cshtml
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP POST request for user registration. 
+        /// It validates the model state, checks if the password and confirmation password match, 
+        /// creates a new Customer object, and attempts to register the user with the UserManager.
+        /// If the registration is successful, it redirects to the login page. 
+        /// If not, it adds the errors to the ModelState and returns the view with the model.
+        /// </summary>
+        /// <param name="model">The RegisterViewModel instance containing the user's registration information.</param>
+        /// <returns>
+        /// If the model state is valid and the user registration is successful, it redirects to the login page. 
+        /// If the model state is invalid or the user registration fails, it returns the view with the model.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -166,7 +185,16 @@ namespace OnlineBookingSystem.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// Author: Amir Ghiassian
+        /// Handles the HTTP GET request for two-factor authentication. 
+        /// It generates a random number, sends a verification SMS to the user's phone number, 
+        /// and checks the verification code sent to the user's phone number.
+        /// </summary>
+        /// <param name="cust">The Customer instance containing the user's information.</param>
+        /// <returns>
+        /// Returns the view for two-factor authentication.
+        /// </returns>
         [AllowAnonymous]
         [HttpGet]
         public IActionResult TwoFactor(Customer cust)
@@ -189,6 +217,15 @@ namespace OnlineBookingSystem.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Author: Amir Ghiassian
+        /// Handles the HTTP POST request for two-factor authentication.
+        /// It checks if the two-factor code entered by the user matches the random number generated.
+        /// If the code is correct, it signs in the user and redirects to the dashboard.
+        /// If the code is incorrect, it adds an error to the ModelState and returns the view.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns>if code entered is correct, returns user to the Dashboard, if the code is wrong, states invalid code</returns>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> TwoFactor(TwoFactorCodeViewModel code)
@@ -212,19 +249,47 @@ namespace OnlineBookingSystem.Controllers
             }
             return View();
         }
+
+        /// <summary>
+        /// Author: Daniel O'Brien
+        /// Handles the HTTP GET request for the Dashboard view.
+        /// </summary>
+        /// <returns> returns a view for the dashboard containing the list of restaurants </returns>
         [Authorize]
         public async Task<IActionResult> Dashboard()
         {
             return View(_context.Restaurants.ToList());
         }
+
+        /// <summary>
+        /// Author: Daniel O'Brien
+        /// Handles the HTTP GET request for the Reservations view.
+        /// </summary>
+        /// <returns>Returns the Reservations view</returns>
         [Authorize]
         public IActionResult Reservations()
         {
             return View();
         }
-        [AllowAnonymous]
-        public IActionResult LoginPage() => View(); //Get request for LoginPage.cshtml
 
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP GET request for the Login Page.
+        /// </summary>
+        /// <returns>Returns the Login Page view</returns>
+        [AllowAnonymous]
+        public IActionResult LoginPage() => View();
+
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP POST request for the Login Page.
+        /// It validates the model state, finds the user by username, verifies the password,
+        /// and signs in the user if the verification is successful.
+        /// If the verification is successful, it redirects to the Dashboard.
+        /// If the verification is unsuccessful, it adds an error to the ModelState and returns the view.
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> LoginPage(LoginViewModel account)
@@ -268,7 +333,16 @@ namespace OnlineBookingSystem.Controllers
             Debug.WriteLine("Invalid Login Attempt");
             return View("LoginPage");
         }
-        //HttpGet for MakeNewRes.cshtml
+
+
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP GET request for the MakeNewRes view.
+        /// </summary>
+        /// <param name="restaurantId"></param>
+        /// <returns>If the restaurant is not found by id and is null, it returns NotFound.
+        /// If the return is successful it returns a wrapper object of a new Reservation and the restaurant with the needed restaurant id
+        /// </returns>
         [Authorize]
         public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID
         {
@@ -283,7 +357,19 @@ namespace OnlineBookingSystem.Controllers
             return View(new Wrapper(new Reservation(), _context.Restaurants.Find(restaurantId))); //Return the view
         }
 
-        //HttpPost for MakeNewRes.cshtml
+
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP POST request for the MakeNewRes view.
+        /// It validates the model state, calculates the price based on the reservation time and party size,
+        /// and adds the reservation to the database.
+        /// </summary>
+        /// <param name="Reservation"></param>
+        /// <returns>
+        /// Returns a wrapper object containing: 
+        ///     1. The reservation object
+        ///     2. The restaurant object
+        /// </returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
@@ -324,6 +410,15 @@ namespace OnlineBookingSystem.Controllers
             return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId), await _userManager.FindByIdAsync(_userManager.GetUserId(User))));
         }
 
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP GET request for the ViewReservations view.
+        /// </summary>
+        /// <returns>
+        /// If the user is not found, the profile retuns an error, user not found
+        /// If teh user is not a customer, the profile returns an error, user is not a customer
+        /// Other wise, the list of reservations is returned to the list of reservations view
+        /// </returns>
         public async Task<IActionResult> ViewReservation()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -341,7 +436,15 @@ namespace OnlineBookingSystem.Controllers
             return View(_context.Reservations.ToList());
         }
 
-
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP GET request for the EditReservation view.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// If the reservation is not found by id and is null, it returns NotFound.
+        /// If the return is successful it returns the reservation object
+        /// </returns>
         public async Task<IActionResult> EditReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -353,6 +456,16 @@ namespace OnlineBookingSystem.Controllers
             return View(reservation);
         }
 
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP POST request for the EditReservation view.
+        /// It validates the model state, updates the reservation in the database, and redirects to the ViewReservations view.
+        /// </summary>
+        /// <param name="reservation"></param>
+        /// <returns>
+        /// If the model state is valid, the reservation is updated in the database, and the user is redirected to the ViewReservations view.
+        /// If the model state is invalid, the user is returned to the EditReservation view with the reservation object.
+        /// </returns>
         [HttpPost]
         public IActionResult EditReservation(Reservation reservation)
         {
@@ -366,6 +479,15 @@ namespace OnlineBookingSystem.Controllers
             return View("MakeNewRes", reservation);
         }
 
+        /// <summary>
+        /// Author:  Eric Hanoun
+        /// Handles the HTTP GET request for the DeleteReservation view.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// if the reservation is not found, returns NotFound, 
+        /// if it is found, deletes it and returns the ViewReservation again
+        /// </returns>
         public IActionResult DeleteReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -381,7 +503,14 @@ namespace OnlineBookingSystem.Controllers
         }
 
 
-        //HttpGet for Profile.cshtml
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP GET request for the Profile view.
+        /// </summary>
+        /// <returns>
+        /// If the user is not found, the profile retuns an error, user not found
+        /// If the return is successful it returns the profile view model
+        /// </returns>
         public async Task<IActionResult> Profile()
         {
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -399,6 +528,14 @@ namespace OnlineBookingSystem.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Author: Daniel O'Brien
+        /// Handles the HTTP GET request for the UserManagement view.
+        /// Allows an admin to view all users in the database.
+        /// </summary>
+        /// <returns>
+        /// Returns the UserManagement view with a list of all users in the database.
+        /// </returns>
         [Authorize(Roles = "Admin")]
         public IActionResult UserManagement()
         {
