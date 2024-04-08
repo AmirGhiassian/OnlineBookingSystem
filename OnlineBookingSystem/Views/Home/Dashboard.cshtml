@@ -5,6 +5,16 @@
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        .restaurant-image {
+            width: 400px;
+            height: auto;
+            object-fit: contain;
+            border: 1px solid #000;
+        }
+        
+    </style>
 </head>
 
 <body>
@@ -21,11 +31,12 @@
                     </div>
                     <p class="mb-1">@restaurant.Address</p>
                     <p class="mb-1">@restaurant.Description</p>
-                    <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
+                    <img src="@restaurant.Image" class="img-fluid restaurant-image d-block" alt="Restaurant Image">
                     <br />
                     <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.RestaurantId"
                         class="btn btn-primary">Make Reservation</a>
                 </div>
+                <br/>
             }
         </div>
     </div>
