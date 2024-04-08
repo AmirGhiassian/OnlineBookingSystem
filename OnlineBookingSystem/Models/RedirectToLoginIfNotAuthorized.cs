@@ -8,9 +8,9 @@ namespace OnlineBookingSystem.Models
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (!context.HttpContext.User.Identity.IsAuthenticated)
+            if (context.HttpContext.User?.Identity?.IsAuthenticated != true)
             {
-                context.HttpContext.Items["Unauthorized"] = "Please log in.";
+                //context.HttpContext.Items["Unauthorized"] = "Please log in.";
                 context.Result = new RedirectToRouteResult(
                     new RouteValueDictionary
                     {

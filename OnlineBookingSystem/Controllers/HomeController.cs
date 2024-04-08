@@ -22,6 +22,9 @@ namespace OnlineBookingSystem.Controllers
     /// <summary>
     /// The controller class for the backbone of the application
     /// </summary>
+    /// 
+
+    [Authorize]
     public class HomeController : Controller
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
@@ -39,7 +42,7 @@ namespace OnlineBookingSystem.Controllers
         /// Initializes the database with a set of default restaurants if they do not already exist.
         /// This method is called when the HomeController is created.
         /// </summary>
-
+        [AllowAnonymous]
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -50,7 +53,7 @@ namespace OnlineBookingSystem.Controllers
                 Address = "1234 Main St",
                 Phone = "134-386-9753",
                 Description = "Best and most popular fast food restaurant in the world.",
-                Image = "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Big-Mac.jpg?$Product_Desktop$",
+                Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2",
                 reservations = new List<Reservation>()
             },
             new Restaurant
@@ -59,7 +62,7 @@ namespace OnlineBookingSystem.Controllers
                 Address = "5678 Main St",
                 Phone = "905-072-9075",
                 Description = "Customizable burgers and sandwiches.",
-                Image = "https://www.bk.com/sites/default/files/03202020_BK_Web_LTO_Whopper_0.png",
+                Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg",
                 reservations = new List<Reservation>()
             },
             new Restaurant
@@ -68,7 +71,7 @@ namespace OnlineBookingSystem.Controllers
                 Address = "9101 Main St",
                 Phone = "905-783-8453",
                 Description = "Fresh, never frozen beef burgers.",
-                Image = "https://www.wendys.com/en-us/assets/menu/product/cheeseburger-2x.png",
+                Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s",
                 reservations = new List<Reservation>()
             },
             new Restaurant
@@ -77,7 +80,7 @@ namespace OnlineBookingSystem.Controllers
                 Address = "1122 Main St",
                 Phone = "238-493-8652",
                 Description = "Mexican-inspired fast food.",
-                Image = "https://www.tacobell.com/images/21499_cheesy-gordita-crunch.png",
+                Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg",
                 reservations = new List<Reservation>()
             }
             };
@@ -105,6 +108,7 @@ namespace OnlineBookingSystem.Controllers
         /// Author: Amir Ghiassian
         /// Constructor for the HomeController class, taking in a RestaurantContext, UserManager, and SignInManager object.
         /// </summary>
+
         public HomeController(RestaurantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
             _context = context;
@@ -270,7 +274,7 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Dashboard view.
         /// </summary>
         /// <returns> returns a view for the dashboard containing the list of restaurants </returns>
-        [RedirectToLoginIfNotAuthorized]
+
         public async Task<IActionResult> Dashboard()
         {
             return View(_context.Restaurants.ToList());
@@ -281,7 +285,7 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Reservations view.
         /// </summary>
         /// <returns>Returns the Reservations view</returns>
-        [RedirectToLoginIfNotAuthorized]
+
         public IActionResult Reservations()
         {
             return View();
@@ -309,10 +313,10 @@ namespace OnlineBookingSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginPage(LoginViewModel account)
         {
-            if (HttpContext.Items.ContainsKey("Unauthorized"))
-            {
-                ModelState.AddModelError("Unauthorized", HttpContext.Items["Unauthorized"].ToString());
-            }
+            // if (HttpContext.Items.ContainsKey("Unauthorized"))
+            // {
+            //     ModelState.AddModelError("Unauthorized", HttpContext.Items["Unauthorized"].ToString());
+            // }
 
 
             if (ModelState.IsValid)
@@ -374,7 +378,7 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>If the restaurant is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns a wrapper object of a new Reservation and the restaurant with the needed restaurant id
         /// </returns>
-        [RedirectToLoginIfNotAuthorized]
+
         public async Task<IActionResult> MakeNewRes(int restaurantId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
@@ -402,7 +406,7 @@ namespace OnlineBookingSystem.Controllers
         ///     2. The restaurant object
         /// </returns>
         [HttpPost]
-        [RedirectToLoginIfNotAuthorized]
+
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
             if (ModelState.IsValid)
@@ -450,7 +454,6 @@ namespace OnlineBookingSystem.Controllers
         /// If teh user is not a customer, the profile returns an error, user is not a customer
         /// Other wise, the list of reservations is returned to the list of reservations view
         /// </returns>
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ViewReservation()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -477,7 +480,6 @@ namespace OnlineBookingSystem.Controllers
         /// If the reservation is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns the reservation object
         /// </returns>
-        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> EditReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -500,7 +502,6 @@ namespace OnlineBookingSystem.Controllers
         /// If the model state is invalid, the user is returned to the EditReservation view with the reservation object.
         /// </returns>
         [HttpPost]
-        [RedirectToLoginIfNotAuthorized]
         public IActionResult EditReservation(Reservation reservation)
         {
             if (ModelState.IsValid)
@@ -522,8 +523,6 @@ namespace OnlineBookingSystem.Controllers
         /// if the reservation is not found, returns NotFound, 
         /// if it is found, deletes it and returns the ViewReservation again
         /// </returns>
-
-        [RedirectToLoginIfNotAuthorized]
         public IActionResult DeleteReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -547,7 +546,6 @@ namespace OnlineBookingSystem.Controllers
         /// If the user is not found, the profile retuns an error, user not found
         /// If the return is successful it returns the profile view model
         /// </returns>
-        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> Profile()
         {
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -573,7 +571,6 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>
         /// Returns the UserManagement view with a list of all users in the database.
         /// </returns>
-        [RedirectToLoginIfNotAuthorized(Roles = "Admin")]
         public IActionResult UserManagement()
         {
 
