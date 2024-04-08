@@ -67,10 +67,10 @@
                             }
                             <p class="card-text">Date: @reservation.Date  <br/> Time: @reservation.Time</p>
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes"
-                                    asp-route-id="@reservation.ReservationId">Edit</a>
-                                <form asp-action="DeleteReservation" asp-route-id="@reservation.ReservationId"
-                                    method="post">
+                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes" asp-route-restaurantId="@reservation.RestaurantId" 
+                                asp-route-reservationId="@reservation.ReservationId">Edit</a>
+                                <form asp-action="DeleteReservation" asp-route-reservationId="@reservation.ReservationId"
+                                     method="post">
                                     <button type="submit" class="btn">Delete</button>
                                 </form>
                             </div>
