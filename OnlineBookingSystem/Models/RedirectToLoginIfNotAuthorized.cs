@@ -18,6 +18,13 @@ namespace OnlineBookingSystem.Models
                         { "action", "LoginPage" }
                     });
             }
+            else
+            {
+
+                // Continue with the requested action
+                context.Result = null;
+            }
         }
     }
 }
+
