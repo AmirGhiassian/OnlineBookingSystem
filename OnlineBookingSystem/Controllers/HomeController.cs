@@ -250,7 +250,7 @@ namespace OnlineBookingSystem.Controllers
         }
         //HttpGet for MakeNewRes.cshtml
         [Authorize]
-        public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID
+        public async Task<IActionResult> MakeNewRes(int restaurantId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
 
@@ -260,7 +260,7 @@ namespace OnlineBookingSystem.Controllers
             }
 
 
-            return View(new Wrapper(new Reservation(), restaurant)); //Return the view
+            return View(new Wrapper(new Reservation(), restaurant, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))); //Return the view
         }
 
         //HttpPost for MakeNewRes.cshtml
@@ -301,7 +301,7 @@ namespace OnlineBookingSystem.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard");
             }
-            return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId), await _userManager.FindByIdAsync(_userManager.GetUserId(User))));
+            return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))));
         }
 
         public async Task<IActionResult> ViewReservation()

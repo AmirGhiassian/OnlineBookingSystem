@@ -23,7 +23,7 @@
                     <p class="mb-1">@restaurant.Description</p>
                     <img src="@restaurant.Image" class="img-fluid" alt="Restaurant Image">
                     <br />
-                    <a asp-action="MakeNewRes" asp-route="@restaurant.RestaurantId"></a>
+                    <a asp-action="MakeNewRes" asp-route-restaurantId="@restaurant.RestaurantId">Make Reservation</a>
                 </div>
             }
         </div>

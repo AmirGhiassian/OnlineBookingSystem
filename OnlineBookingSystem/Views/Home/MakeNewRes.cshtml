@@ -17,8 +17,10 @@
     <h2 class="text-center my-4" style="color: #007bff;">@headingText - @Model.Restaurant.Name</h2>
     <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
     <form method="POST" asp-action="@action">
-        <input asp-for="Restaurant.RestaurantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
-        <input asp-for="Customer.CustID" type="hidden" /> <!-- Hidden field for CustomerId -->
+        <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
+        <!-- Hidden field for RestaurantId -->
+        <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.CustID" />
+        <!-- Hidden field for CustomerId -->
         <!-- Hidden field for RestaurantName -->
         <div class="form-group">
             <label asp-for="Reservation.Name">Name</label>
