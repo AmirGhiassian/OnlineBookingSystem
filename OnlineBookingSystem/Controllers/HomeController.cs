@@ -7,6 +7,7 @@ using Microsoft.Identity.Client;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 /// <summary>
 /// Author: Amir Ghiassian
@@ -29,7 +30,8 @@ namespace OnlineBookingSystem.Controllers
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
         private Random random = new Random();
-        private int randomNumber;
+
+        private static Dictionary<string, string> authData = new Dictionary<string, string>(3);
         private PasswordHasher<Customer> passwordHasher = new PasswordHasher<Customer>();
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace OnlineBookingSystem.Controllers
         /// Initializes the database with a set of default restaurants if they do not already exist.
         /// This method is called when the HomeController is created.
         /// </summary>
+
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -167,7 +170,7 @@ namespace OnlineBookingSystem.Controllers
                     Reservations = new List<int>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
-                    TwoFactorEnabled = false // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
+                    TwoFactorEnabled = true // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
                 });
 
                 if (result.Succeeded)
@@ -195,26 +198,27 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>
         /// Returns the view for two-factor authentication.
         /// </returns>
-        [AllowAnonymous]
+
         [HttpGet]
-        public IActionResult TwoFactor(Customer cust)
+        [AllowAnonymous]
+        public IActionResult TwoFactor()
         {
-
-            randomNumber = random.Next(100000, 999999);
-
-            VerificationResource.Create(
-            to: $"+1{cust.PhoneNumber}",
-            channel: "sms",
-            pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
-        );
-
-            VerificationCheckResource.Create(
-                 to: $"+1{cust.PhoneNumber}",
-                 code: randomNumber.ToString(),
-                 pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
-             );
+            if (ModelState.IsValid)
+            {
+                var PhoneNumber = authData["PhoneNumber"];
+                VerificationResource.Create(
+                to: $"+1{PhoneNumber}",
+                channel: "sms",
+                pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
+            );
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid Phone Number");
+            }
 
             return View();
+
         }
 
         /// <summary>
@@ -228,15 +232,24 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>if code entered is correct, returns user to the Dashboard, if the code is wrong, states invalid code</returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> TwoFactor(TwoFactorCodeViewModel code)
+        public async Task<IActionResult> TwoFactor(TwoFactorCodeViewModel codeEntered)
         {
+
             if (ModelState.IsValid)
             {
-                if (code.code == randomNumber.ToString())
+                var PhoneNumber = authData["PhoneNumber"].ToString();
+                var result = VerificationCheckResource.Create(
+                      to: $"+1{PhoneNumber}",
+                      code: codeEntered.code,
+                      pathServiceSid: "VAadb25fa50d3ef1770730417427840f75"
+                  );
+                if (result.Status == "approved")
                 {
-                    var result = await _signInManager.TwoFactorSignInAsync("Phone", code.code, isPersistent: false, rememberClient: false);
-                    if (result.Succeeded)
+                    var user = await _userManager.FindByNameAsync(authData["UserName"].ToString());
+                    var signInResult = await _signInManager.PasswordSignInAsync(user, authData["Password"].ToString(), false, lockoutOnFailure: false);
+                    if (signInResult.Succeeded)
                     {
+                        authData.Clear();
                         return RedirectToAction("Dashboard");
                     }
                     else
@@ -247,6 +260,8 @@ namespace OnlineBookingSystem.Controllers
                 }
 
             }
+
+
             return View();
         }
 
@@ -255,7 +270,7 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Dashboard view.
         /// </summary>
         /// <returns> returns a view for the dashboard containing the list of restaurants </returns>
-        [Authorize]
+        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> Dashboard()
         {
             return View(_context.Restaurants.ToList());
@@ -266,7 +281,7 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Reservations view.
         /// </summary>
         /// <returns>Returns the Reservations view</returns>
-        [Authorize]
+        [RedirectToLoginIfNotAuthorized]
         public IActionResult Reservations()
         {
             return View();
@@ -294,6 +309,12 @@ namespace OnlineBookingSystem.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginPage(LoginViewModel account)
         {
+            if (HttpContext.Items.ContainsKey("Unauthorized"))
+            {
+                ModelState.AddModelError("Unauthorized", HttpContext.Items["Unauthorized"].ToString());
+            }
+
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(account.UserName);
@@ -304,9 +325,19 @@ namespace OnlineBookingSystem.Controllers
                     // Check if the user has two-factor authentication enabled
                     if (await _userManager.GetTwoFactorEnabledAsync(user))
                     {
+
+
+
                         // Generate and send the two-factor code, then redirect the user to the TwoFactor action
                         // ...
-                        return RedirectToAction("TwoFactor", user);
+
+
+                        authData.Add("UserName", account.UserName);
+                        authData.Add("PhoneNumber", user.PhoneNumber);
+                        authData.Add("Password", account.Password);
+
+
+                        return RedirectToAction("TwoFactor");
                     }
                     else
                     {
@@ -343,7 +374,7 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>If the restaurant is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns a wrapper object of a new Reservation and the restaurant with the needed restaurant id
         /// </returns>
-        [Authorize]
+        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> MakeNewRes(int restaurantId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
@@ -371,7 +402,7 @@ namespace OnlineBookingSystem.Controllers
         ///     2. The restaurant object
         /// </returns>
         [HttpPost]
-        [Authorize]
+        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
             if (ModelState.IsValid)
@@ -419,6 +450,7 @@ namespace OnlineBookingSystem.Controllers
         /// If teh user is not a customer, the profile returns an error, user is not a customer
         /// Other wise, the list of reservations is returned to the list of reservations view
         /// </returns>
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ViewReservation()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -445,6 +477,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the reservation is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns the reservation object
         /// </returns>
+        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> EditReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -467,6 +500,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the model state is invalid, the user is returned to the EditReservation view with the reservation object.
         /// </returns>
         [HttpPost]
+        [RedirectToLoginIfNotAuthorized]
         public IActionResult EditReservation(Reservation reservation)
         {
             if (ModelState.IsValid)
@@ -488,6 +522,8 @@ namespace OnlineBookingSystem.Controllers
         /// if the reservation is not found, returns NotFound, 
         /// if it is found, deletes it and returns the ViewReservation again
         /// </returns>
+
+        [RedirectToLoginIfNotAuthorized]
         public IActionResult DeleteReservation(string id)
         {
             var reservation = _context.Reservations.Find(id);
@@ -511,6 +547,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the user is not found, the profile retuns an error, user not found
         /// If the return is successful it returns the profile view model
         /// </returns>
+        [RedirectToLoginIfNotAuthorized]
         public async Task<IActionResult> Profile()
         {
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -536,7 +573,7 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>
         /// Returns the UserManagement view with a list of all users in the database.
         /// </returns>
-        [Authorize(Roles = "Admin")]
+        [RedirectToLoginIfNotAuthorized(Roles = "Admin")]
         public IActionResult UserManagement()
         {
 
