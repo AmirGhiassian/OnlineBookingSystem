@@ -7,8 +7,20 @@ using Microsoft.Identity.Client;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
 using Microsoft.EntityFrameworkCore;
+
+/// <summary>
+/// Author: Amir Ghiassian
+/// The HomeController class manages the main operations of the application, 
+/// including user authentication, reservation management, and communication with external services like Twilio.
+/// It uses the RestaurantContext to interact with the database, 
+/// and the UserManager and SignInManager for user authentication and management.
+/// </summary>
+
 namespace OnlineBookingSystem.Controllers
 {
+    /// <summary>
+    /// The controller class for the backbone of the application
+    /// </summary>
     public class HomeController : Controller
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
@@ -20,7 +32,11 @@ namespace OnlineBookingSystem.Controllers
         private int randomNumber;
         private PasswordHasher<Customer> passwordHasher = new PasswordHasher<Customer>();
 
-
+        /// <summary>
+        /// Method Author: Eric Hanoun
+        /// Initializes the database with a set of default restaurants if they do not already exist.
+        /// This method is called when the HomeController is created.
+        /// </summary>
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -82,6 +98,10 @@ namespace OnlineBookingSystem.Controllers
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Author: Amir Ghiassian
+        /// Constructor for the HomeController class, taking in a RestaurantContext, UserManager, and SignInManager object.
+        /// </summary>
         public HomeController(RestaurantContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
         {
             _context = context;
