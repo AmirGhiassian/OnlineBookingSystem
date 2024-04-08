@@ -528,7 +528,7 @@ namespace OnlineBookingSystem.Controllers
             {
                 _context.Reservations.Update(reservation);
                 _context.SaveChanges();
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("ViewReservation");
             }
 
             return View(reservation);
@@ -581,6 +581,39 @@ namespace OnlineBookingSystem.Controllers
             };
 
             return View(model);
+        }
+
+        /// <summary>
+        /// Author: Eric Hanoun
+        /// Handles the HTTP GET request for the FeedbackForm view.
+        /// </summary>
+        /// <param name="reservationId"></param>
+        /// <returns>
+        /// If the reservation is not found, returns NotFound,
+        /// If the return is successful it returns the feedback form view
+        /// </returns>
+        public IActionResult FeedbackForm(int reservationId)
+        {
+            var reservation = _context.Reservations.Find(reservationId);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SubmitFeedback(Feedback feedback)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Feedbacks.Add(feedback);
+                _context.SaveChanges();
+                return RedirectToAction("ViewReservation");
+            }
+
+            return View("FeedbackForm", feedback);
         }
 
         /// <summary>
