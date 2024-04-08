@@ -113,6 +113,11 @@ namespace OnlineBookingSystem.Models
             Feedbacks = feedbacks;
         }
 
+        public Wrapper(List<Reservation> reservations, Feedback feedback){
+            Reservations = reservations;
+            Feedback = feedback;
+        }
+
 
         /// <summary>
         /// Initializes a new instance of the Wrapper class with a list of restaurant objects
