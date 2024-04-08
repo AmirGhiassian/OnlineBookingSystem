@@ -260,7 +260,7 @@ namespace OnlineBookingSystem.Controllers
             }
 
 
-            return View(new Wrapper(new Reservation(), _context.Restaurants.Find(restaurantId))); //Return the view
+            return View(new Wrapper(new Reservation(), restaurant)); //Return the view
         }
 
         //HttpPost for MakeNewRes.cshtml
