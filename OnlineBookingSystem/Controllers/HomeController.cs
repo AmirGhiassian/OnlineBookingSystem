@@ -344,7 +344,7 @@ namespace OnlineBookingSystem.Controllers
         /// If the return is successful it returns a wrapper object of a new Reservation and the restaurant with the needed restaurant id
         /// </returns>
         [Authorize]
-        public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID
+        public async Task<IActionResult> MakeNewRes(int restaurantId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
 
@@ -354,7 +354,7 @@ namespace OnlineBookingSystem.Controllers
             }
 
 
-            return View(new Wrapper(new Reservation(), _context.Restaurants.Find(restaurantId))); //Return the view
+            return View(new Wrapper(new Reservation(), restaurant, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))); //Return the view
         }
 
 
@@ -407,7 +407,7 @@ namespace OnlineBookingSystem.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard");
             }
-            return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId), await _userManager.FindByIdAsync(_userManager.GetUserId(User))));
+            return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))));
         }
 
         /// <summary>
