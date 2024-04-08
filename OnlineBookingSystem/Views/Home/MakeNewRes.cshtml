@@ -1,4 +1,4 @@
-@model OnlineBookingSystem.Models.Reservation
+@model OnlineBookingSystem.Models.Wrapper
 <!DOCTYPE html>
 <html>
 
@@ -10,51 +10,55 @@
 
 <body>
     @{
-        var isNew = Model == null;
-        var action = isNew ? "MakeNewRes" : "EditReservation";
-        var restaurant = ViewBag.Restaurant as Restaurant;
-        var headingText = isNew ? "Make a Reservation" : "Edit Reservation";
+        var action = Model.Reservation.isEmpty() ? "MakeNewRes" : "EditReservation";
+        var headingText = Model.Reservation.isEmpty() ? "Make a Reservation" : "Edit Reservation";
     }
 
-    <h2 class="text-center my-4" style="color: #007bff;">@headingText - @restaurant.Name</h2>
+    <h2 class="text-center my-4" style="color: #007bff;">@headingText - @Model.Restaurant.Name</h2>
     <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
     <form method="POST" asp-action="@action">
-        <input asp-for="RestaurantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
-        <input asp-for="RestaurantName" type="hidden" value="@TempData["RestaurantName"]" /> <!-- Hidden field for RestaurantName -->
+        <input asp-for="Restaurant.ResturantId" type="hidden" /> <!-- Hidden field for RestaurantId -->
+        <input asp-for="Customer.CustID" type="hidden" /> <!-- Hidden field for CustomerId -->
+        <!-- Hidden field for RestaurantName -->
         <div class="form-group">
-            <label asp-for="Name">Name</label>
-            <input asp-for="Name" class="form-control" required>
+            <label asp-for="Reservation.Name">Name</label>
+            <input asp-for="Reservation.Name" class="form-control" required>
         </div>
         <div class="form-group">
-            <label asp-for="Email">Email</label>
-            <input asp-for="Email" class="form-control" required>
+            <label asp-for="Reservation.Email">Email</label>
+            <input asp-for="Reservation.Email" class="form-control" required>
         </div>
         <div class="form-group">
-            <label asp-for="Phone">Phone</label>
-            <input asp-for="Phone" class="form-control" required>
+            <label asp-for="Reservation.Phone">Phone</label>
+            <input asp-for="Reservation.Phone" class="form-control" required>
         </div>
         <div class="form-group">
-            <label asp-for="PartySize">Number of Guests (1 - 15)</label>
-            <input asp-for="PartySize" class="form-control" type="number" min="1" max="15" required>
+            <label asp-for="Reservation.PartySize">Number of Guests (1 - 15)</label>
+            <input id="PartySize" asp-for="Reservation.PartySize" class="form-control" type="number" min="1" max="15"
+                required>
         </div>
         <div class="form-group">
-            <label asp-for="Date">Date</label>
-            <input asp-for="Date" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+            <label asp-for="Reservation.Date">Date</label>
+            <input asp-for="Reservation.Date" class="form-control" type="date"
+                min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
         </div>
         <div class="form-group">
-            <label asp-for="Time">Time (8:30 AM - 11:00 PM)</label>
-            <input asp-for="Time" class="form-control" type="time" min="06:30" max="23:00" step="1800" required>
+            <label asp-for="Reservation.Time">Time (8:30 AM - 11:00 PM)</label>
+            <input id="Time" asp-for="Reservation.Time" class="form-control" type="time" min="06:30" max="23:00"
+                step="1800" required>
         </div>
         <div class="form-group">
-            <label asp-for="SpecialRequests">Message/Special Requests (Allergy, Birthday, etc.)</label>
-            <textarea asp-for="SpecialRequests" class="form-control"></textarea>
+            <label asp-for="Reservation.SpecialRequests">Message/Special Requests (Allergy, Birthday, etc.)</label>
+            <textarea asp-for="Reservation.SpecialRequests" class="form-control"></textarea>
         </div>
         <div class="form-group">
-            <label asp-for="Price">Price</label>
-            <input asp-for="Price" class="form-control" readonly>
+            <label asp-for="Reservation.Price">Price</label>
+            <input id="Price" asp-for="Reservation.Price" class="form-control" readonly>
         </div>
 
-        <input type="submit" class="btn btn-primary" value='@(isNew ? "Create Reservation" : "Update Reservation")' /> <!-- Submit button -->
+        <input type="submit" class="btn btn-primary"
+            value='@(Model.Reservation.isEmpty() ? "Create Reservation" : "Update Reservation")' />
+        <!-- Submit button -->
     </form>
 
     <!--- Script to calculate the price based on the time selected --->

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
-namespace OnlineBookingSystem
+namespace OnlineBookingSystem.Models
 {
 
     public class ResturantContext : DbContext

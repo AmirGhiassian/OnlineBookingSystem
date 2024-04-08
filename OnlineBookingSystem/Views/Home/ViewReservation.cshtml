@@ -1,56 +1,73 @@
-@model List<Reservation>
+@using Microsoft.EntityFrameworkCore
+@model List<OnlineBookingSystem.Models.Reservation>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Your Reservations</title>
+    @inject OnlineBookingSystem.Models.ResturantContext _context
     <style>
         body {
-            background-color: #f0f8ff; 
+            background-color: #f0f8ff;
         }
+
         .container {
-            max-width: 960px; 
+            using System.Data.Entity;
+            max-width: 960px;
         }
+
         .card {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
-            border-color: #007bff; 
-            text-align: center; /* Center content inside the card */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            border-color: #007bff;
+            text-align: center;
+            /* Center content inside the card */
         }
+
         .card-title {
-            color: #007bff; 
+            color: #007bff;
         }
-        .btn-primary, .btn {
-            background-color: #007bff; 
-            border-color: #007bff; 
-            color: white; 
+
+        .btn-primary,
+        .btn {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
         }
+
         .btn:hover {
-            background-color: #0056b3; 
+            background-color: #0056b3;
         }
+
         form {
-            display: inline-block; /* To align form buttons next to each other */
+            display: inline-block;
+            /* To align form buttons next to each other */
         }
     </style>
 </head>
+
 <body>
-    <h1 class="text-center my-4">Your Reservations</h1> 
+    <h1 class="text-center my-4">Your Reservations</h1>
 
     <div class="container">
-        <div class="row justify-content-center"> 
+        <div class="row justify-content-center">
             @foreach (var reservation in Model)
             {
-                <div class="col-md-6 d-flex align-items-stretch"> 
-                    <div class="card mb-3 w-100"> 
+                <div class="col-md-6 d-flex align-items-stretch">
+                    <div class="card mb-3 w-100">
                         <div class="card-body">
-                            <h2 class="card-title">@reservation.RestaurantName</h2>
-                            <h3 class="card-title">@reservation.Name</h3>
+                            <h2 class="card-title">@reservation.RestaurantId</h2>
+                            <h3 class="card-text">@_context.Restaurants.FirstOrDefaultAsync(rest => rest.ResturantId ==
+                            reservation.RestaurantId)</h3>
                             <p class="card-text">@reservation.Date @reservation.Time</p>
-                            <div class="d-flex justify-content-center align-items-center flex-column"> 
-                                <a class="btn btn-primary mb-2" asp-action="EditReservation" asp-route-id="@reservation.ReservationId">Edit</a>
-                                <form asp-action="DeleteReservation" asp-route-id="@reservation.ReservationId" method="post">
-                                    <button type="submit" class="btn">Delete</button> 
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                                <a class="btn btn-primary mb-2" asp-action="EditReservation"
+                                    asp-route-id="@reservation.ReservationId">Edit</a>
+                                <form asp-action="DeleteReservation" asp-route-id="@reservation.ReservationId"
+                                    method="post">
+                                    <button type="submit" class="btn">Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -64,4 +81,5 @@
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

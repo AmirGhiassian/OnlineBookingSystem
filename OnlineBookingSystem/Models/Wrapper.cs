@@ -8,6 +8,8 @@ namespace OnlineBookingSystem.Models
         public Restaurant Restaurant { get; set; }
         public ResturantContext _dbContext { get; set; }
 
+        public Customer Customer { get; set; }
+
         // public List<Customer> Customers;
         public List<Feedback> Feedbacks;
         public List<Reservation> Reservations;
@@ -20,6 +22,27 @@ namespace OnlineBookingSystem.Models
 
         }
 
+        public Wrapper(Reservation reservation, Restaurant restaurant, Customer customer)
+        {
+            Reservation = reservation;
+            Restaurant = restaurant;
+            Customer = customer;
+        }
+
+        public Wrapper(Reservation reservation, Restaurant restaurant)
+        {
+            Reservation = reservation;
+            Restaurant = restaurant;
+        }
+
+        public Wrapper(List<Reservation> reservations, Restaurant restaurant)
+        {
+            Reservations = reservations;
+            Restaurant = restaurant;
+        }
+
+
+
         // public Wrapper(List<Customer> customers)
         // {
         //     Customers = customers;
@@ -29,6 +52,8 @@ namespace OnlineBookingSystem.Models
         {
             Feedbacks = feedbacks;
         }
+
+
 
         public Wrapper(List<Restaurant> restaurants)
         {

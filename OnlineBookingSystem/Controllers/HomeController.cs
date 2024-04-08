@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Client;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
+using Microsoft.EntityFrameworkCore;
 namespace OnlineBookingSystem.Controllers
 {
     public class HomeController : Controller
@@ -31,7 +32,7 @@ namespace OnlineBookingSystem.Controllers
                 Phone = "134-386-9753",
                 Description = "Best and most popular fast food restaurant in the world.",
                 Image = "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Big-Mac.jpg?$Product_Desktop$",
-                reservedTimes = Array.Empty<Reservation>()
+                reservations = new List<Reservation>()
             },
             new Restaurant
             {
@@ -40,7 +41,7 @@ namespace OnlineBookingSystem.Controllers
                 Phone = "905-072-9075",
                 Description = "Customizable burgers and sandwiches.",
                 Image = "https://www.bk.com/sites/default/files/03202020_BK_Web_LTO_Whopper_0.png",
-                reservedTimes = Array.Empty<Reservation>()
+                reservations = new List<Reservation>()
             },
             new Restaurant
             {
@@ -49,7 +50,7 @@ namespace OnlineBookingSystem.Controllers
                 Phone = "905-783-8453",
                 Description = "Fresh, never frozen beef burgers.",
                 Image = "https://www.wendys.com/en-us/assets/menu/product/cheeseburger-2x.png",
-                reservedTimes = Array.Empty<Reservation>()
+                reservations = new List<Reservation>()
             },
             new Restaurant
             {
@@ -58,7 +59,7 @@ namespace OnlineBookingSystem.Controllers
                 Phone = "238-493-8652",
                 Description = "Mexican-inspired fast food.",
                 Image = "https://www.tacobell.com/images/21499_cheesy-gordita-crunch.png",
-                reservedTimes = Array.Empty<Reservation>()
+                reservations = new List<Reservation>()
             }
             };
 
@@ -124,7 +125,7 @@ namespace OnlineBookingSystem.Controllers
                     UserName = model.Username,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    Reservations = new List<Reservation>(),
+                    Reservations = new List<int>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
                     TwoFactorEnabled = false // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
@@ -252,59 +253,55 @@ namespace OnlineBookingSystem.Controllers
         public IActionResult MakeNewRes(int restaurantId) //Get the restaurant ID
         {
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
+
             if (restaurant == null)
             {
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
 
-            ViewBag.Restaurant = restaurant; //Pass the restaurant to the view
-            return View(); //Return the view
+
+            return View(new Wrapper(new Reservation(), _context.Restaurants.Find(restaurantId))); //Return the view
         }
 
         //HttpPost for MakeNewRes.cshtml
         [HttpPost]
         [Authorize]
-        public IActionResult MakeNewRes(Reservation reservation)
+        public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
             if (ModelState.IsValid)
             {
                 // Check if a time has been inputted
-                if (reservation.Time != TimeSpan.Zero)
+                if (Reservation.Time != TimeSpan.Zero)
                 {
                     // Calculate the price based on the reservation time
-                    if (reservation.Time.Hours >= 6 && reservation.Time.Hours < 12)
+                    if (Reservation.Time.Hours >= 6 && Reservation.Time.Hours < 12)
                     {
-                        reservation.Price = 10; // Breakfast price
+                        Reservation.Price = 10; // Breakfast price
                     }
-                    else if (reservation.Time.Hours >= 12 && reservation.Time.Hours < 18)
+                    else if (Reservation.Time.Hours >= 12 && Reservation.Time.Hours < 18)
                     {
-                        reservation.Price = 20; // Lunch price
+                        Reservation.Price = 20; // Lunch price
                     }
-                    else if (reservation.Time.Hours >= 18 && reservation.Time.Hours < 23)
+                    else if (Reservation.Time.Hours >= 18 && Reservation.Time.Hours < 23)
                     {
-                        reservation.Price = 30; // Dinner price
+                        Reservation.Price = 30; // Dinner price
                     }
                     else
                     {
-                        reservation.Price = 0; // Default price
+                        Reservation.Price = 0; // Default price
                     }
                 }
 
+
                 // Add the price for guests
-                reservation.Price += reservation.PartySize * 1.50;
+                Reservation.Price += Reservation.PartySize * 1.50;
 
-                // Set the RestaurantName property
-                var restaurant = _context.Restaurants.FirstOrDefault(r => r.Name == reservation.RestaurantName);
-                if (restaurant != null)
-                {
-                    reservation.RestaurantName = restaurant.Name;
-                }
 
-                _context.Reservations.Add(reservation);
+                _context.Reservations.Add(Reservation);
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard");
             }
-            return View(reservation);
+            return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId), await _userManager.FindByIdAsync(_userManager.GetUserId(User))));
         }
 
         public async Task<IActionResult> ViewReservation()
@@ -315,15 +312,13 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var customer = user as Customer;
-            if (customer == null)
+            ;
+            if (user == null)
             {
                 return NotFound("The user is not a customer.");
             }
 
-            var reservations = _context.Reservations.Where(r => r.CustId == customer.CustID).ToList();
-
-            return View(reservations);
+            return View(_context.Reservations.ToList());
         }
 
 
@@ -384,11 +379,11 @@ namespace OnlineBookingSystem.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")] 
+        [Authorize(Roles = "Admin")]
         public IActionResult UserManagement()
         {
-            
-            var users = _userManager.Users.ToList(); 
+
+            var users = _userManager.Users.ToList();
             return View(users);
         }
 

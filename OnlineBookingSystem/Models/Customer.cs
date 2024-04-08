@@ -9,6 +9,6 @@ namespace OnlineBookingSystem.Models
     {
         [Key]
         public int CustID { get; set; }
-        public List<Reservation>? Reservations { get; set; }
+        public List<int>? Reservations { get; set; }
     }
 }
