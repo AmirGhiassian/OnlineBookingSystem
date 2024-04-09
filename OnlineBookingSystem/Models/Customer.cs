@@ -20,6 +20,5 @@ namespace OnlineBookingSystem.Models
     public class Customer : IdentityUser
     {
         public List<int>? Reservations { get; set; }
-        public List<Reservation> reservations { get; set; }
     }
 }

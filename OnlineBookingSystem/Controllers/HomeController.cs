@@ -180,7 +180,6 @@ namespace OnlineBookingSystem.Controllers
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
                     TwoFactorEnabled = true, // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
-                    reservations = new List<Reservation>()
                 });
 
                 if (result.Succeeded)
@@ -410,15 +409,15 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
 
-            Reservation reservation;
+            int reservation;
             if (reservationId.HasValue)
             {
 
-                reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == reservationId);
+                reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.FirstOrDefault(r => r == reservationId);
             }
             else
             {   //If no reservation id is provided, create a new reservation object
-                reservation = new Reservation();
+                reservation = -1;
             }
 
             return View(new Wrapper(reservation, restaurant)); //Return the view
@@ -472,7 +471,7 @@ namespace OnlineBookingSystem.Controllers
                 Reservation.Price += Reservation.PartySize * 1.50;
                 // Check if a reservation with the same ID already exists
                 var user = await _userManager.GetUserAsync(User);
-                var existingReservation = user?.reservations.FirstOrDefault(r => r.ReservationId == Reservation.ReservationId);
+                var existingReservation = user?.Reservations.FirstOrDefault(r => r == Reservation.ReservationId);
 
                 if (existingReservation != null)
                 {
@@ -482,7 +481,7 @@ namespace OnlineBookingSystem.Controllers
                 else
                 {
                     // Add the new reservation
-                    _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.Add(Reservation);
+                    _identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.Add(Reservation.ReservationId);
                 }
 
                 _identityContext.SaveChangesAsync();
@@ -516,7 +515,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound("The user is not a customer.");
             }
 
-            return View(new Wrapper(_identityContext.Users.Find(_userManager.GetUserId(User)).reservations, _context.Restaurants.ToList()));
+            return View(new Wrapper(_identityContext.Users.Find(_userManager.GetUserId(User)).Reservations, _context.Restaurants.ToList()));
         }
 
         /// <summary>
@@ -534,7 +533,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotSignedIn();
 
 
-            var reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == id);
+            var reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.FirstOrDefault(r => r == id);
             if (reservation == null)
             {
                 return NotFound();
@@ -561,7 +560,7 @@ namespace OnlineBookingSystem.Controllers
             if (ModelState.IsValid)
             {
 
-                _identityContext.Entry(_identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == reservation.ReservationId)).CurrentValues.SetValues(reservation);
+                _identityContext.Entry(_identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.FirstOrDefault(r => r == reservation.ReservationId)).CurrentValues.SetValues(reservation);
                 _identityContext.SaveChanges();
                 return RedirectToAction("ViewReservation");
             }
@@ -583,7 +582,7 @@ namespace OnlineBookingSystem.Controllers
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
 
-            _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.Remove(_identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == reservationid));
+            _identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.Remove(_identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.FirstOrDefault(r => r == reservationid));
             _identityContext.SaveChanges();
 
 

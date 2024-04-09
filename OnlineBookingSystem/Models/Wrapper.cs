@@ -1,13 +1,20 @@
+
+using Microsoft.AspNetCore.Identity;
+
+
 /// <summary>
 /// Author: Amir Ghiassian
 /// The Wrapper class is a utility class that wraps various entities such as Customer, Feedback, Reservation, and Restaurant.
 /// It is used to pass multiple entities as a single object.
 /// </summary>
-
 namespace OnlineBookingSystem.Models
 {
     public class Wrapper
     {
+        private readonly IdentityContext _identityContext;
+
+        private readonly UserManager<Customer> _userManager;
+
         /// <summary>
         /// Represents the Feedback object to be wrapped.
         /// </summary>
@@ -43,7 +50,7 @@ namespace OnlineBookingSystem.Models
         /// <summary>
         /// Represents the list of reservation instances
         /// </summary>
-        public List<Reservation> Reservations;
+        public List<int> Reservations;
 
         /// <summary>
         /// Represents the list of restaurant instances
@@ -55,7 +62,7 @@ namespace OnlineBookingSystem.Models
         /// Initializes a new instance of the Wrapper class with a list of reservations.
         /// </summary>
         /// <param name="reservations">The list of reservations.</param>
-        public Wrapper(List<Reservation> reservations)
+        public Wrapper(List<int> reservations)
         {
             Reservations = reservations;
 
@@ -65,7 +72,7 @@ namespace OnlineBookingSystem.Models
         /// Author: Eric Hanoun
         /// Initializes a new instance of the Wrapper class with a list of reservations and a list of restaurants.
         /// </summary>
-        public Wrapper(List<Reservation> reservations, List<Restaurant> restaurants)
+        public Wrapper(List<int> reservations, List<Restaurant> restaurants)
         {
             Reservations = reservations;
             Restaurants = restaurants;
@@ -100,7 +107,7 @@ namespace OnlineBookingSystem.Models
         /// </summary>
         /// <param name="reservations">The list of reservations.</param>
         /// <param name="restaurant">The restaurant instance.</param>
-        public Wrapper(List<Reservation> reservations, Restaurant restaurant)
+        public Wrapper(List<int> reservations, Restaurant restaurant)
         {
             Reservations = reservations;
             Restaurant = restaurant;
@@ -115,7 +122,7 @@ namespace OnlineBookingSystem.Models
             Feedbacks = feedbacks;
         }
 
-        public Wrapper(List<Reservation> reservations, Feedback feedback)
+        public Wrapper(List<int> reservations, Feedback feedback)
         {
             Reservations = reservations;
             Feedback = feedback;
