@@ -21,7 +21,7 @@ namespace OnlineBookingSystem.Controllers
     /// </summary>
     /// 
 
-    
+
     public class HomeController : Controller
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
@@ -39,7 +39,7 @@ namespace OnlineBookingSystem.Controllers
         /// Initializes the database with a set of default restaurants if they do not already exist.
         /// This method is called when the HomeController is created.
         /// </summary>
-        
+
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -113,7 +113,7 @@ namespace OnlineBookingSystem.Controllers
             _signInManager = signInManager;
             ResturantDatabaseInit();
             TwilioClient.Init(accountSid, authToken);
-            
+
 
         }
 
@@ -523,7 +523,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound("The user is not a customer.");
             }
 
-            return View(new Wrapper(_context.Reservations.ToList(), _context.Restaurants.ToList()));
+            return View(new Wrapper(_context.Reservations.Where(r => r.CustId == user.Id).ToList(), _context.Restaurants.ToList()));
         }
 
         /// <summary>
@@ -670,6 +670,6 @@ namespace OnlineBookingSystem.Controllers
             return View("FeedbackForm", feedback);
         }
 
-        
+
     }
 }
