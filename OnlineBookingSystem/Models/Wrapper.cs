@@ -33,6 +33,8 @@ namespace OnlineBookingSystem.Models
         /// </summary>
         public Customer Customer { get; set; }
 
+
+
         /// <summary>
         /// Represents the list of feedback instances
         /// </summary>
@@ -113,7 +115,8 @@ namespace OnlineBookingSystem.Models
             Feedbacks = feedbacks;
         }
 
-        public Wrapper(List<Reservation> reservations, Feedback feedback){
+        public Wrapper(List<Reservation> reservations, Feedback feedback)
+        {
             Reservations = reservations;
             Feedback = feedback;
         }

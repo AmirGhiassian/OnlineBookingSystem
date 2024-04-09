@@ -1,12 +1,5 @@
 using OnlineBookingSystem.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using OnlineBookingSystem.Areas.Identity.Data;
-using Microsoft.Extensions.Options;
-using Twilio;
-using Twilio.Rest.Verify.V2.Service;
-using Microsoft.AspNetCore.Authorization;
-
 
 namespace OnlineBookingSystem
 {
@@ -49,12 +42,7 @@ namespace OnlineBookingSystem
             builder.Services.AddDbContext<IdentityContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
-            builder.Services.AddAuthorization(options =>
-            {
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-            });
+
 
 
             var app = builder.Build();
@@ -68,7 +56,6 @@ namespace OnlineBookingSystem
 
             app.UseAuthorization();
 
-            app.UseStatusCodePagesWithReExecute("/Home/LoginPage", "?statusCode={0}");
 
             app.Run();
 

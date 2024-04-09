@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
+
 
 /// <summary>
 /// Author: Amir Ghiassian
@@ -21,7 +21,7 @@ namespace OnlineBookingSystem.Controllers
     /// </summary>
     /// 
 
-    [RedirectToLoginIfNotAuthorized]
+
     public class HomeController : Controller
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
@@ -29,6 +29,8 @@ namespace OnlineBookingSystem.Controllers
         private readonly RestaurantContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
+
+        private readonly IdentityContext _identityContext;
         private Random random = new Random();
 
         private static Dictionary<string, string> authData = new Dictionary<string, string>(3);
@@ -39,7 +41,7 @@ namespace OnlineBookingSystem.Controllers
         /// Initializes the database with a set of default restaurants if they do not already exist.
         /// This method is called when the HomeController is created.
         /// </summary>
-        [AllowAnonymous]
+
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -50,8 +52,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "1234 Main St",
                     Phone = "134-386-9753",
                     Description = "Best and most popular fast food restaurant in the world.",
-                    Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2",
-                    reservations = new List<Reservation>()
+                    Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2"
                 },
                 new Restaurant
                 {
@@ -59,8 +60,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "5678 Main St",
                     Phone = "905-072-9075",
                     Description = "Customizable burgers and sandwiches.",
-                    Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg",
-                    reservations = new List<Reservation>()
+                    Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg"
                 },
                 new Restaurant
                 {
@@ -68,8 +68,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "9101 Main St",
                     Phone = "905-783-8453",
                     Description = "Fresh, never frozen beef burgers.",
-                    Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s",
-                    reservations = new List<Reservation>()
+                    Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s"
                 },
                 new Restaurant
                 {
@@ -77,8 +76,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "1122 Main St",
                     Phone = "238-493-8652",
                     Description = "Mexican-inspired fast food.",
-                    Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg",
-                    reservations = new List<Reservation>()
+                    Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg"
                 }
                 };
 
@@ -113,28 +111,30 @@ namespace OnlineBookingSystem.Controllers
             _signInManager = signInManager;
             ResturantDatabaseInit();
             TwilioClient.Init(accountSid, authToken);
-            
+
 
         }
 
-        protected override void Dispose(bool disposing)
+
+
+        public async Task<IActionResult> Logout()
         {
-            if (disposing)
-            {
-                _signInManager.SignOutAsync().GetAwaiter().GetResult();
-            }
-            base.Dispose(disposing);
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("LoginPage");
         }
-
 
         /// <summary>
         /// Author: Eric Hanoun
         /// </summary>
         /// <returns> returns a view with the Login Page as the default page to show on startup</returns>
-        [AllowAnonymous]
-        public ViewResult Index()
+
+        public IActionResult Index()
         {
-            return View("LoginPage"); //Bring user to starting login page
+            if (_signInManager.IsSignedIn(User))
+                return RedirectToAction("Dashboard");
+            return View("LoginPage");
         }
 
         /// <summary>
@@ -143,7 +143,6 @@ namespace OnlineBookingSystem.Controllers
         /// </summary>
         /// <returns> returns a default view for the register page </returns>
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Register() => View();
 
         /// <summary>
@@ -160,7 +159,6 @@ namespace OnlineBookingSystem.Controllers
         /// If the model state is invalid or the user registration fails, it returns the view with the model.
         /// </returns>
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -181,7 +179,8 @@ namespace OnlineBookingSystem.Controllers
                     Reservations = new List<int>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
-                    TwoFactorEnabled = true // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
+                    TwoFactorEnabled = true, // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
+                    reservations = new List<Reservation>()
                 });
 
                 if (result.Succeeded)
@@ -211,7 +210,6 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult TwoFactor()
         {
             if (ModelState.IsValid)
@@ -242,7 +240,6 @@ namespace OnlineBookingSystem.Controllers
         /// <param name="code"></param>
         /// <returns>if code entered is correct, returns user to the Dashboard, if the code is wrong, states invalid code</returns>
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> TwoFactor(TwoFactorCodeViewModel codeEntered)
         {
 
@@ -276,6 +273,12 @@ namespace OnlineBookingSystem.Controllers
             return View();
         }
 
+        private RedirectToActionResult NotSignedIn()
+        {
+            ModelState.AddModelError(string.Empty, "You are not signed in!");
+            return RedirectToAction("LoginPage");
+        }
+
         /// <summary>
         /// Author: Daniel O'Brien
         /// Handles the HTTP GET request for the Dashboard view.
@@ -284,7 +287,12 @@ namespace OnlineBookingSystem.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
-            return View(_context.Restaurants.ToList());
+            if (_signInManager.IsSignedIn(User))
+                return View(_context.Restaurants.ToList());
+            else
+                return NotSignedIn();
+
+
         }
 
         /// <summary>
@@ -303,9 +311,13 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Login Page.
         /// </summary>
         /// <returns>Returns the Login Page view</returns>
-        [AllowAnonymous]
-        public IActionResult LoginPage() => View();
 
+        public IActionResult LoginPage()
+        {
+            if (_signInManager.IsSignedIn(User))
+                return RedirectToAction("Dashboard");
+            return View();
+        }
         /// <summary>
         /// Author: Eric Hanoun
         /// Handles the HTTP POST request for the Login Page.
@@ -317,7 +329,7 @@ namespace OnlineBookingSystem.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPost]
-        [AllowAnonymous]
+
         public async Task<IActionResult> LoginPage(LoginViewModel account)
         {
             // if (HttpContext.Items.ContainsKey("Unauthorized"))
@@ -388,6 +400,9 @@ namespace OnlineBookingSystem.Controllers
 
         public async Task<IActionResult> MakeNewRes(int? restaurantId, int? reservationId) //Get the restaurant ID
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
+
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
 
             if (restaurant == null)
@@ -398,15 +413,15 @@ namespace OnlineBookingSystem.Controllers
             Reservation reservation;
             if (reservationId.HasValue)
             {
-                //If a reservation id is provided, find the reservation with the given ID
-                reservation = _context.Reservations.Find(reservationId);
+
+                reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == reservationId);
             }
             else
             {   //If no reservation id is provided, create a new reservation object
                 reservation = new Reservation();
             }
 
-            return View(new Wrapper(reservation, restaurant, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))); //Return the view
+            return View(new Wrapper(reservation, restaurant)); //Return the view
         }
 
 
@@ -427,6 +442,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
                 // Check if a time has been inputted
@@ -454,19 +471,21 @@ namespace OnlineBookingSystem.Controllers
                 // Add the price for guests
                 Reservation.Price += Reservation.PartySize * 1.50;
                 // Check if a reservation with the same ID already exists
-                var existingReservation = _context.Reservations.FirstOrDefault(r => r.ReservationId == Reservation.ReservationId);
+                var user = await _userManager.GetUserAsync(User);
+                var existingReservation = user?.reservations.FirstOrDefault(r => r.ReservationId == Reservation.ReservationId);
+
                 if (existingReservation != null)
                 {
                     // Update the existing reservation
-                    _context.Entry(existingReservation).CurrentValues.SetValues(Reservation);
+                    _identityContext.Entry(existingReservation).CurrentValues.SetValues(Reservation);
                 }
                 else
                 {
                     // Add the new reservation
-                    _context.Reservations.Add(Reservation);
+                    _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.Add(Reservation);
                 }
 
-                await _context.SaveChangesAsync();
+                _identityContext.SaveChangesAsync();
                 return RedirectToAction("Dashboard");
             }
             return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))));
@@ -483,6 +502,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public async Task<IActionResult> ViewReservation()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -495,7 +516,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound("The user is not a customer.");
             }
 
-            return View(new Wrapper(_context.Reservations.ToList(), _context.Restaurants.ToList()));
+            return View(new Wrapper(_identityContext.Users.Find(_userManager.GetUserId(User)).reservations, _context.Restaurants.ToList()));
         }
 
         /// <summary>
@@ -509,7 +530,11 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public async Task<IActionResult> EditReservation(int id)
         {
-            var reservation = _context.Reservations.Find(id);
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
+
+
+            var reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == id);
             if (reservation == null)
             {
                 return NotFound();
@@ -531,10 +556,13 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public IActionResult EditReservation(Reservation reservation)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
-                _context.Reservations.Update(reservation);
-                _context.SaveChanges();
+
+                _identityContext.Entry(_identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == reservation.ReservationId)).CurrentValues.SetValues(reservation);
+                _identityContext.SaveChanges();
                 return RedirectToAction("ViewReservation");
             }
 
@@ -552,14 +580,12 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public IActionResult DeleteReservation(int reservationid)
         {
-            var reservation = _context.Reservations.Find(reservationid);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
 
-            _context.Reservations.Remove(reservation);
-            _context.SaveChanges();
+            _identityContext.Users.Find(_userManager.GetUserId(User)).reservations.Remove(_identityContext.Users.Find(_userManager.GetUserId(User)).reservations.FirstOrDefault(r => r.ReservationId == reservationid));
+            _identityContext.SaveChanges();
+
 
             return RedirectToAction("ViewReservation");
         }
@@ -575,6 +601,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public async Task<IActionResult> Profile()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             if (user == null)
             {
@@ -599,16 +627,18 @@ namespace OnlineBookingSystem.Controllers
         /// If the reservation is not found, returns NotFound,
         /// If the return is successful it returns the feedback form view
         /// </returns>
-        public IActionResult FeedbackForm(int reservationId)
-        {
-            var reservation = _context.Reservations.Find(reservationId);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
+        // public IActionResult FeedbackForm(int reservationId)
+        // {
+        //     if (!_signInManager.IsSignedIn(User))
+        //         return NotSignedIn();
+        //     var reservation = _context.Find(reservationId);
+        //     if (reservation == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            return View();
-        }
+        //     return View();
+        // }
 
         /// <summary>
         /// Author: Eric Hanoun
@@ -620,6 +650,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public IActionResult SubmitFeedback(Feedback feedback)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
                 _context.Feedbacks.Add(feedback);
@@ -630,34 +662,7 @@ namespace OnlineBookingSystem.Controllers
             return View("FeedbackForm", feedback);
         }
 
-        /// <summary>
-        /// Author: Daniel O'Brien
-        /// Handles the HTTP GET request for the UserManagement view.
-        /// Allows an admin to view all users in the database.
-        /// </summary>
-        /// <returns>
-        /// Returns the UserManagement view with a list of all users in the database.
-        /// </returns>
-        public IActionResult UserManagement()
-        {
-
-            var users = _userManager.Users.ToList();
-            return View(users);
-        }
 
 
-        // [HttpPost]
-        // public async Task<IActionResult> UploadPhoto(IFormFile photo)
-        // {
-        //     var user = await _userManager.GetUserAsync(User);
-        //     if (user == null)
-        //     {
-        //         return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        //     }
-
-        //     // Save the photo and update the user's PhotoPath property
-
-        //     return RedirectToAction("Profile");
-        // }
     }
 }

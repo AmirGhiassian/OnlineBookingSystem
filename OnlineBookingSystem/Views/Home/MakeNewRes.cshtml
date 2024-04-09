@@ -19,7 +19,7 @@
     <form method="POST" asp-action="@action">
         <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
         <input asp-for="Reservation.ReservationId" type="hidden"/>
-        <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.CustID" />
+        @* <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.Id" /> *@
 
         <div class="form-group">
             <label asp-for="Reservation.Name">Name</label>
