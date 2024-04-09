@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
+
 
 /// <summary>
 /// Author: Amir Ghiassian
@@ -29,6 +29,8 @@ namespace OnlineBookingSystem.Controllers
         private readonly RestaurantContext _context; //Singleton Database Context
         private readonly UserManager<Customer> _userManager;
         private readonly SignInManager<Customer> _signInManager;
+
+        private readonly IdentityContext _identityContext;
         private Random random = new Random();
 
         private static Dictionary<string, string> authData = new Dictionary<string, string>(3);
@@ -50,8 +52,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "1234 Main St",
                     Phone = "134-386-9753",
                     Description = "Best and most popular fast food restaurant in the world.",
-                    Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2",
-                    reservations = new List<Reservation>()
+                    Image = "https://s7d1.scene7.com/is/image/mcdonalds/franchisinghub-homepage-hero-desktop:hero-desktop?resmode=sharp2"
                 },
                 new Restaurant
                 {
@@ -59,8 +60,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "5678 Main St",
                     Phone = "905-072-9075",
                     Description = "Customizable burgers and sandwiches.",
-                    Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg",
-                    reservations = new List<Reservation>()
+                    Image = "https://cdn.forumcomm.com/dims4/default/44a81cf/2147483647/strip/true/crop/2016x1512+0+0/resize/1421x1066!/quality/90/?url=https%3A%2F%2Fforum-communications-production-web.s3.us-west-2.amazonaws.com%2Fbrightspot%2Fde%2F34%2F982450d34f4184c5662d5b4df757%2Fimg-0089.jpg"
                 },
                 new Restaurant
                 {
@@ -68,8 +68,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "9101 Main St",
                     Phone = "905-783-8453",
                     Description = "Fresh, never frozen beef burgers.",
-                    Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s",
-                    reservations = new List<Reservation>()
+                    Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCaGKnO43i2s8TG7FCBhbx7OQojmi3h-GTJTjul7CpkQ&s"
                 },
                 new Restaurant
                 {
@@ -77,8 +76,7 @@ namespace OnlineBookingSystem.Controllers
                     Address = "1122 Main St",
                     Phone = "238-493-8652",
                     Description = "Mexican-inspired fast food.",
-                    Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg",
-                    reservations = new List<Reservation>()
+                    Image = "https://s3-media0.fl.yelpcdn.com/bphoto/rWo5CFW-I0VV5lQM8tkg-Q/348s.jpg"
                 }
                 };
 
@@ -113,7 +111,7 @@ namespace OnlineBookingSystem.Controllers
             _signInManager = signInManager;
             ResturantDatabaseInit();
             TwilioClient.Init(accountSid, authToken);
-            
+
 
         }
 
@@ -204,7 +202,7 @@ namespace OnlineBookingSystem.Controllers
                     Reservations = new List<int>(),
                     PasswordHash = passwordHasher.HashPassword(new Customer(), model.Password),
                     LockoutEnabled = false,
-                    TwoFactorEnabled = true // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
+                    TwoFactorEnabled = true, // This changes flow for website due to 2 fac auth, change to false to get the id with just pass
                 });
 
                 if (result.Succeeded)
@@ -295,6 +293,12 @@ namespace OnlineBookingSystem.Controllers
 
 
             return View();
+        }
+
+        private RedirectToActionResult NotSignedIn()
+        {
+            ModelState.AddModelError(string.Empty, "You are not signed in!");
+            return RedirectToAction("LoginPage");
         }
 
         /// <summary>
@@ -419,18 +423,18 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
 
-            Reservation reservation;
+            int reservation;
             if (reservationId.HasValue)
             {
-                //If a reservation id is provided, find the reservation with the given ID
-                reservation = _context.Reservations.Find(reservationId);
+
+                reservation = _identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.FirstOrDefault(r => r == reservationId);
             }
             else
             {   //If no reservation id is provided, create a new reservation object
-                reservation = new Reservation();
+                reservation = -1;
             }
 
-            return View(new Wrapper(reservation, restaurant, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))); //Return the view
+            return View(new Wrapper(reservation, restaurant)); //Return the view
         }
 
 
@@ -451,6 +455,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
             if (ModelState.IsValid)
@@ -480,19 +486,21 @@ namespace OnlineBookingSystem.Controllers
                 // Add the price for guests
                 Reservation.Price += Reservation.PartySize * 1.50;
                 // Check if a reservation with the same ID already exists
-                var existingReservation = _context.Reservations.FirstOrDefault(r => r.ReservationId == Reservation.ReservationId);
+                var user = await _userManager.GetUserAsync(User);
+                var existingReservation = user?.Reservations.FirstOrDefault(r => r == Reservation.ReservationId);
+
                 if (existingReservation != null)
                 {
                     // Update the existing reservation
-                    _context.Entry(existingReservation).CurrentValues.SetValues(Reservation);
+                    _identityContext.Entry(existingReservation).CurrentValues.SetValues(Reservation);
                 }
                 else
                 {
                     // Add the new reservation
-                    _context.Reservations.Add(Reservation);
+                    _identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.Add(Reservation.ReservationId);
                 }
 
-                await _context.SaveChangesAsync();
+                _identityContext.SaveChangesAsync();
                 return RedirectToAction("Dashboard");
             }
             return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))));
@@ -511,6 +519,8 @@ namespace OnlineBookingSystem.Controllers
         {
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -523,7 +533,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound("The user is not a customer.");
             }
 
-            return View(new Wrapper(_context.Reservations.ToList(), _context.Restaurants.ToList()));
+            return View(new Wrapper(_identityContext.Users.Find(_userManager.GetUserId(User)).Reservations, _context.Restaurants.ToList()));
         }
 
         /// <summary>
@@ -563,10 +573,13 @@ namespace OnlineBookingSystem.Controllers
         {
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
-                _context.Reservations.Update(reservation);
-                _context.SaveChanges();
+
+                _identityContext.Entry(_identityContext.Users.Find(_userManager.GetUserId(User)).Reservations.FirstOrDefault(r => r == reservation.ReservationId)).CurrentValues.SetValues(reservation);
+                _identityContext.SaveChanges();
                 return RedirectToAction("ViewReservation");
             }
 
@@ -611,6 +624,8 @@ namespace OnlineBookingSystem.Controllers
         {
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             if (user == null)
             {
@@ -645,8 +660,8 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound();
             }
 
-            return View();
-        }
+        //     return View();
+        // }
 
         /// <summary>
         /// Author: Eric Hanoun
@@ -658,6 +673,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public IActionResult SubmitFeedback(Feedback feedback)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
             if (ModelState.IsValid)

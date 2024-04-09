@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 /// <summary>
 /// Author: Daniel O'Brien
@@ -19,7 +19,6 @@ namespace OnlineBookingSystem.Models
         [Key]
         public int ReservationId { get; set; }
         public int RestaurantId { get; set; } //Foreign key to the restaurant where the reservation is made
-        public int CustId { get; set; } //Foreign key to the customer who made the reservation
         [Required]
         public string? Name { get; set; } //Name of the person who books the reservation
         [Required]
@@ -36,13 +35,6 @@ namespace OnlineBookingSystem.Models
         public int PartySize { get; set; }
         public string? SpecialRequests { get; set; } //Optional field
 
-        /// <summary>
-        /// Method to check if any essential reservation information is missing.
-        /// </summary>
-        /// <returns>
-        /// Returns true if any of the essential information (Name, Email, Phone, Date, Time, PartySize) is null of zero (for PartySize).
-        /// Otherwise, returns false.
-        /// </returns>
         public bool isEmpty()
         {
             if (Name == null || Email == null || Phone == null || Date == null || Time == null || PartySize == 0)

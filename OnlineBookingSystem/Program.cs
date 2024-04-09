@@ -1,12 +1,5 @@
 using OnlineBookingSystem.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using OnlineBookingSystem.Areas.Identity.Data;
-using Microsoft.Extensions.Options;
-using Twilio;
-using Twilio.Rest.Verify.V2.Service;
-using Microsoft.AspNetCore.Authorization;
-
 
 namespace OnlineBookingSystem
 {

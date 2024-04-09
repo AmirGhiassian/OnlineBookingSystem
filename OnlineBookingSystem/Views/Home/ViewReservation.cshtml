@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Your Reservations</title>
     @inject OnlineBookingSystem.Models.RestaurantContext _context
+    @inject OnlineBookingSystem.Models.IdentityContext _identity;
     <style>
         body {
             background-color: #f0f8ff;
@@ -18,6 +19,8 @@
             using System.Data.Entity;
             max-width: 960px;
         }
+
+        using Microsoft.AspNet.Identity;
 
         .card {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -56,26 +59,28 @@
 
             @foreach (var reservation in Model.Reservations)
             {
-                var restaurant = Model.Restaurants.FirstOrDefault(r => r.RestaurantId == reservation.RestaurantId);
+                var restaurant = Model.Restaurants.FirstOrDefault(r => r.RestaurantId == _identity.Users.Find(User).reservations.FirstOrDefault(r => r.ReservationId == reservation.ReservationId).RestaurantId);
+
                 <div class="col-md-6 d-flex align-items-stretch">
                     <div class="card mb-3 w-100">
                         <div class="card-body">
-                            @if (restaurant != null)
+                             @if (restaurant != null)
                             {
                                 <h2 class="card-title">@restaurant.Name</h2>
                                 <h3 class="card-text">@restaurant.Description</h3>
-                            }
-                            <p class="card-text">Date: @reservation.Date  <br/> Time: @reservation.Time</p>
+                            } 
+                            <p class="card-text">Date: @reservation.Date <br /> Time: @reservation.Time</p>
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes" asp-route-restaurantId="@reservation.RestaurantId" 
-                                asp-route-reservationId="@reservation.ReservationId">Edit</a>
+                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes"
+                                    asp-route-restaurantId="@reservation.RestaurantId"
+                                    asp-route-reservationId="@reservation.ReservationId">Edit</a>
                                 <form asp-action="DeleteReservation" asp-route-reservationId="@reservation.ReservationId"
-                                     method="post">
+                                    method="post">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
-                                <br/>
-                                <a class="btn btn-secondary mb-2" asp-action="FeedbackForm" 
-                                asp-route-reservationId="@reservation.ReservationId">Provide Feedback</a>
+                                <br />
+                                <a class="btn btn-secondary mb-2" asp-action="FeedbackForm"
+                                    asp-route-reservationId="@reservation.ReservationId">Provide Feedback</a>
                             </div>
                         </div>
                     </div>
