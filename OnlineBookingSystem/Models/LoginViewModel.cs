@@ -1,8 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-/* 
-*/
-
 /// <summary>
 /// Author: Daniel O'Brien
 /// This class is used to create a login view model object that will be used to store login information.

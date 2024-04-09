@@ -21,7 +21,7 @@ namespace OnlineBookingSystem.Controllers
     /// </summary>
     /// 
 
-    [RedirectToLoginIfNotAuthorized]
+    
     public class HomeController : Controller
     {
         private string accountSid = "AC4822ed0c1bbe698e9b602ded983f0046";
@@ -39,7 +39,7 @@ namespace OnlineBookingSystem.Controllers
         /// Initializes the database with a set of default restaurants if they do not already exist.
         /// This method is called when the HomeController is created.
         /// </summary>
-        [AllowAnonymous]
+        
         private void ResturantDatabaseInit()
         {
             var restaurants = new List<Restaurant>
@@ -117,23 +117,47 @@ namespace OnlineBookingSystem.Controllers
 
         }
 
-        protected override void Dispose(bool disposing)
+
+        /// <summary>
+        /// Author: Amir Ghiassian
+        /// Handles the HTTP GET request for the Logout view.
+        /// It signs out the user and redirects to the LoginPage.
+        /// </summary>
+        /// <returns>
+        /// Returns LoginPage if the user is not signed in, as they are required
+        /// to be signed-in to reach pages after the login
+        /// </returns>
+        public async Task<IActionResult> Logout()
         {
-            if (disposing)
-            {
-                _signInManager.SignOutAsync().GetAwaiter().GetResult();
-            }
-            base.Dispose(disposing);
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("LoginPage");
         }
 
+        /// <summary>
+        /// Author: Amir Ghiassian
+        /// Handles the HTTP GET request for the NotSignedIn view.
+        /// It adds an error to the ModelState and redirects to the LoginPage.
+        /// </summary>
+        /// <returns>
+        /// Returns to the LoginPage if a user is not signed in and
+        /// access a page beyond the login page
+        /// </returns>
+        private RedirectToActionResult NotSignedIn()
+        {
+            ModelState.AddModelError(string.Empty, "You are not signed in!");
+            return RedirectToAction("LoginPage");
+        }
 
         /// <summary>
         /// Author: Eric Hanoun
         /// </summary>
         /// <returns> returns a view with the Login Page as the default page to show on startup</returns>
-        [AllowAnonymous]
-        public ViewResult Index()
+        public IActionResult Index()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             return View("LoginPage"); //Bring user to starting login page
         }
 
@@ -143,7 +167,6 @@ namespace OnlineBookingSystem.Controllers
         /// </summary>
         /// <returns> returns a default view for the register page </returns>
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Register() => View();
 
         /// <summary>
@@ -160,9 +183,9 @@ namespace OnlineBookingSystem.Controllers
         /// If the model state is invalid or the user registration fails, it returns the view with the model.
         /// </returns>
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 // Check if Password and ConfirmPassword fields match
@@ -211,7 +234,6 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult TwoFactor()
         {
             if (ModelState.IsValid)
@@ -242,7 +264,6 @@ namespace OnlineBookingSystem.Controllers
         /// <param name="code"></param>
         /// <returns>if code entered is correct, returns user to the Dashboard, if the code is wrong, states invalid code</returns>
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> TwoFactor(TwoFactorCodeViewModel codeEntered)
         {
 
@@ -284,6 +305,8 @@ namespace OnlineBookingSystem.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             return View(_context.Restaurants.ToList());
         }
 
@@ -295,6 +318,8 @@ namespace OnlineBookingSystem.Controllers
 
         public IActionResult Reservations()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             return View();
         }
 
@@ -303,7 +328,6 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Login Page.
         /// </summary>
         /// <returns>Returns the Login Page view</returns>
-        [AllowAnonymous]
         public IActionResult LoginPage() => View();
 
         /// <summary>
@@ -317,7 +341,6 @@ namespace OnlineBookingSystem.Controllers
         /// <param name="account"></param>
         /// <returns></returns>
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> LoginPage(LoginViewModel account)
         {
             // if (HttpContext.Items.ContainsKey("Unauthorized"))
@@ -385,9 +408,10 @@ namespace OnlineBookingSystem.Controllers
         /// <returns>If the restaurant is not found by id and is null, it returns NotFound.
         /// If the return is successful it returns a wrapper object of a new Reservation and the restaurant with the needed restaurant id
         /// </returns>
-
         public async Task<IActionResult> MakeNewRes(int? restaurantId, int? reservationId) //Get the restaurant ID
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
 
             if (restaurant == null)
@@ -427,6 +451,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> MakeNewRes(Reservation Reservation)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
                 // Check if a time has been inputted
@@ -483,6 +509,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public async Task<IActionResult> ViewReservation()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -509,6 +537,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public async Task<IActionResult> EditReservation(int id)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var reservation = _context.Reservations.Find(id);
             if (reservation == null)
             {
@@ -531,6 +561,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public IActionResult EditReservation(Reservation reservation)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
                 _context.Reservations.Update(reservation);
@@ -552,6 +584,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public IActionResult DeleteReservation(int reservationid)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var reservation = _context.Reservations.Find(reservationid);
             if (reservation == null)
             {
@@ -575,6 +609,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public async Task<IActionResult> Profile()
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             if (user == null)
             {
@@ -601,6 +637,8 @@ namespace OnlineBookingSystem.Controllers
         /// </returns>
         public IActionResult FeedbackForm(int reservationId)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             var reservation = _context.Reservations.Find(reservationId);
             if (reservation == null)
             {
@@ -620,6 +658,8 @@ namespace OnlineBookingSystem.Controllers
         [HttpPost]
         public IActionResult SubmitFeedback(Feedback feedback)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return NotSignedIn();
             if (ModelState.IsValid)
             {
                 _context.Feedbacks.Add(feedback);
@@ -630,34 +670,6 @@ namespace OnlineBookingSystem.Controllers
             return View("FeedbackForm", feedback);
         }
 
-        /// <summary>
-        /// Author: Daniel O'Brien
-        /// Handles the HTTP GET request for the UserManagement view.
-        /// Allows an admin to view all users in the database.
-        /// </summary>
-        /// <returns>
-        /// Returns the UserManagement view with a list of all users in the database.
-        /// </returns>
-        public IActionResult UserManagement()
-        {
-
-            var users = _userManager.Users.ToList();
-            return View(users);
-        }
-
-
-        // [HttpPost]
-        // public async Task<IActionResult> UploadPhoto(IFormFile photo)
-        // {
-        //     var user = await _userManager.GetUserAsync(User);
-        //     if (user == null)
-        //     {
-        //         return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        //     }
-
-        //     // Save the photo and update the user's PhotoPath property
-
-        //     return RedirectToAction("Profile");
-        // }
+        
     }
 }
