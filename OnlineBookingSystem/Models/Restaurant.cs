@@ -34,6 +34,7 @@ namespace OnlineBookingSystem.Models
         [Required]
         public string? Image { get; set; }
 
-        
+        [Required]
+        public List<Reservation> reservations { get; set; } = new List<Reservation>();
     }
 }

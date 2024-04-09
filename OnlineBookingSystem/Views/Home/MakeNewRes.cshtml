@@ -10,16 +10,16 @@
 
 <body>
     @{
-        var action = Model.Reservation.isEmpty() ? "MakeNewRes" : "EditReservation";
-        var headingText = Model.Reservation.isEmpty() ? "Make a Reservation" : "Edit Reservation";
+        var action = Model.Reservation == null ? "MakeNewRes" : "EditReservation";
+        var headingText = Model.Reservation == null? "Make a Reservation" : "Edit Reservation";
     }
 
     <h2 class="text-center my-4" style="color: #007bff;">@action - @Model.Restaurant.Name</h2>
     <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
     <form method="POST" asp-action="@action">
         <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
-        <input asp-for="Reservation.ReservationId" type="hidden" />
-        @* <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.Id" /> *@
+        <input asp-for="Reservation.ReservationId" type="hidden"/>
+        <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.CustID" />
 
         <div class="form-group">
             <label asp-for="Reservation.Name">Name</label>

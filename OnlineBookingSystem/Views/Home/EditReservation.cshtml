@@ -1,0 +1,32 @@
+@model OnlineBookingSystem.Models.Wrapper
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Reservation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    @{
+        var action = Model.Reservation.isEmpty() ? "MakeNewRes" : "EditReservation";
+        var headingText = Model.Reservation.isEmpty() ? "Make a Reservation" : "Edit Reservation";
+    }
+    <h2 class="text-center my-4" style="color: #007bff;">@headingText - @Model.Restaurant.Name</h2>
+    <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
+    <form method="POST" asp-action="@action">
+        <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
+        <!-- Hidden field for RestaurantId -->
+        <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.CustID" />
+        <!-- Hidden field for CustomerId -->
+        <!-- Hidden field for RestaurantName -->
+        <div class="form-group">
+            <label asp-for="Reservation.Name">Name</label>
+            <input asp-for="Reservation.Name" class="form-control" required>
+        </div>
+        <!-- Add other fields as necessary -->
+        <input type="submit" class="btn btn-primary"></input>
+        <!-- Submit button -->
+    </form>
+    <!-- Add your scripts here -->
+</body>
+</html>

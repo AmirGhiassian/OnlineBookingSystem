@@ -1,4 +1,4 @@
-
+using System;
 
 /// <summary>
 /// Author: Eric Hanoun
@@ -12,5 +12,6 @@ namespace OnlineBookingSystem.Models
     {
         public string Username { get; set; }
         public string Email { get; set; }
+        public string PhotoPath { get; set; }
     }
 }

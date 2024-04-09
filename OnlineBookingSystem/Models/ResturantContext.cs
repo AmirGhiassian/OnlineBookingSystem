@@ -23,7 +23,10 @@ namespace OnlineBookingSystem.Models
         public RestaurantContext(DbContextOptions<RestaurantContext> options) : base(options)
         { }
 
-
+        /// <summary>
+        /// Represents the set of all Reservations in the database.
+        /// </summary>
+        public DbSet<Reservation> Reservations { get; set; }
 
         /// <summary>
         /// Represents the set of all Feedback in the database.

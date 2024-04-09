@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Twilio.Types;
 
 /// <summary>
 /// Author: Amir Ghiassian
