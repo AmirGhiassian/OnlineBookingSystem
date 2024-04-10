@@ -14,10 +14,7 @@
             background-color: #f0f8ff;
         }
 
-        .container {
-            using System.Data.Entity;
-            max-width: 960px;
-        }
+
 
         .card {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -45,13 +42,40 @@
             display: inline-block;
             /* To align form buttons next to each other */
         }
+
+        .bg-image {
+            background-image: url('/images/login_page.png');
+            height: 100%;
+            width: 100%;
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: -1;
+        }
     </style>
 </head>
 
 <body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
     <h1 class="text-center my-4">Your Reservations</h1>
 
-    <div class="container">
+    <div class="reservation-container">
         <div class="row justify-content-center">
 
             @foreach (var reservation in Model.Reservations)
@@ -65,17 +89,18 @@
                                 <h2 class="card-title">@restaurant.Name</h2>
                                 <h3 class="card-text">@restaurant.Description</h3>
                             }
-                            <p class="card-text">Date: @reservation.Date  <br/> Time: @reservation.Time</p>
+                            <p class="card-text">Date: @reservation.Date <br /> Time: @reservation.Time</p>
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes" asp-route-restaurantId="@reservation.RestaurantId" 
-                                asp-route-reservationId="@reservation.ReservationId">Edit</a>
+                                <a class="btn btn-primary mb-2" asp-action="MakeNewRes"
+                                    asp-route-restaurantId="@reservation.RestaurantId"
+                                    asp-route-reservationId="@reservation.ReservationId">Edit</a>
                                 <form asp-action="DeleteReservation" asp-route-reservationId="@reservation.ReservationId"
-                                     method="post">
+                                    method="post">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
-                                <br/>
-                                <a class="btn btn-secondary mb-2" asp-action="FeedbackForm" 
-                                asp-route-reservationId="@reservation.ReservationId">Provide Feedback</a>
+                                <br />
+                                <a class="btn btn-secondary mb-2" asp-action="FeedbackForm"
+                                    asp-route-reservationId="@reservation.ReservationId">Provide Feedback</a>
                             </div>
                         </div>
                     </div>

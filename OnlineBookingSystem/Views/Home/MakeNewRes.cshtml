@@ -6,62 +6,109 @@
     <title>Make New Reservation</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        .bg-image {
+            background-image: url('/images/login_page.png');
+            height: 100%;
+            width: 100%;
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: -1;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1rem;
+            /* Using rem for padding */
+            border-radius: 0.25rem;
+            /* Increased max-width for larger area, in rem */
+            background: #FFFFFF;
+            /* Solid white background */
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1), 0 0.1875rem 0.625rem rgba(0, 0, 0, 0.19);
+            /* Shadow in rem */
+            z-index: 2;
+        }
+    </style>
 </head>
 
 <body>
-    @{
-        var action = Model.Reservation == null ? "MakeNewRes" : "EditReservation";
-        var headingText = Model.Reservation == null? "Make a Reservation" : "Edit Reservation";
-    }
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="form-container">
+        <div class="container">
 
-    <h2 class="text-center my-4" style="color: #007bff;">@action - @Model.Restaurant.Name</h2>
-    <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
-    <form method="POST" asp-action="@action">
-        <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
-        <input asp-for="Reservation.ReservationId" type="hidden"/>
-        <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.CustID" />
+            @{
+                var action = Model.Reservation.ReservationId != null ? "MakeNewRes" : "EditReservation";
+                var headingText = Model.Reservation.ReservationId != null ? "Make a Reservation" : "Edit Reservation";
+            }
 
-        <div class="form-group">
-            <label asp-for="Reservation.Name">Name</label>
-            <input asp-for="Reservation.Name" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.Email">Email</label>
-            <input asp-for="Reservation.Email" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.Phone">Phone</label>
-            <input asp-for="Reservation.Phone" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.PartySize">Number of Guests (1 - 15)</label>
-            <input id="PartySize" asp-for="Reservation.PartySize" class="form-control" type="number" min="1" max="15"
-                required>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.Date">Date</label>
-            <input asp-for="Reservation.Date" class="form-control" type="date"
-                min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.Time">Time (8:30 AM - 11:00 PM)</label>
-            <input id="Time" asp-for="Reservation.Time" class="form-control" type="time" min="06:30" max="23:00"
-                step="1800" required>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.SpecialRequests">Message/Special Requests (Allergy, Birthday, etc.)</label>
-            <textarea asp-for="Reservation.SpecialRequests" class="form-control"></textarea>
-        </div>
-        <div class="form-group">
-            <label asp-for="Reservation.Price">Price</label>
-            <input id="Price" asp-for="Reservation.Price" class="form-control" readonly>
-        </div>
+            <h2 class="text-center my-4" style="color: #007bff;">@headingText - @Model.Restaurant.Name</h2>
+            <form method="POST" asp-action="@action">
+                <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
+                <input asp-for="Reservation.RestaurantId" type="hidden" value="@Model.Restaurant.RestaurantId" />
+                <input asp-for="Reservation.ReservationId" type="hidden" />
+                <input asp-for="Reservation.CustId" type="hidden" value="@Model.Customer.CustID" />
+                <div class="form-group">
+                    <label asp-for="Reservation.Name">Name</label>
+                    <input asp-for="Reservation.Name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.Email">Email</label>
+                    <input asp-for="Reservation.Email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.Phone">Phone</label>
+                    <input asp-for="Reservation.Phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.PartySize">Number of Guests (1 - 15)</label>
+                    <input id="PartySize" asp-for="Reservation.PartySize" class="form-control" type="number" min="1"
+                        max="15" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.Date">Date</label>
+                    <input asp-for="Reservation.Date" class="form-control" type="date"
+                        min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.Time">Time (8:30 AM - 11:00 PM)</label>
+                    <input id="Time" asp-for="Reservation.Time" class="form-control" type="time" min="06:30" max="23:00"
+                        step="1800" required>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.SpecialRequests">Message/Special Requests (Allergy, Birthday,
+                        etc.)</label>
+                    <textarea asp-for="Reservation.SpecialRequests" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Reservation.Price">Price</label>
+                    <input id="Price" asp-for="Reservation.Price" class="form-control" readonly>
+                </div>
 
-        <input type="submit" class="btn btn-primary"
-            value='@(Model.Reservation.isEmpty() ? "Create Reservation" : "Update Reservation")' />
-        <!-- Submit button -->
-    </form>
-
+                <input type="submit" class="btn btn-primary" />
+                <!-- Submit button -->
+            </form>
+        </div>
+    </div>
     <!--- Script to calculate the price based on the time selected --->
     <script>
         $(document).ready(function () {
@@ -100,6 +147,7 @@
             });
         });
     </script>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

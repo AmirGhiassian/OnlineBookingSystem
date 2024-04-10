@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
+using Microsoft.AspNetCore.Authorization;
 
 /// <summary>
 /// Author: Amir Ghiassian
@@ -301,7 +302,6 @@ namespace OnlineBookingSystem.Controllers
         /// Handles the HTTP GET request for the Dashboard view.
         /// </summary>
         /// <returns> returns a view for the dashboard containing the list of restaurants </returns>
-
         public async Task<IActionResult> Dashboard()
         {
             if (!_signInManager.IsSignedIn(User))
@@ -411,16 +411,16 @@ namespace OnlineBookingSystem.Controllers
         {
             if (!_signInManager.IsSignedIn(User))
                 return NotSignedIn();
-            var restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
-
+            Restaurant restaurant = _context.Restaurants.Find(restaurantId); //Find the restaurant with the given ID
+            Reservation reservation = _context.Reservations.Find(reservationId) ?? null;
             if (restaurant == null)
             {
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
 
 
-            Reservation reservation;
-            if (reservationId.HasValue)
+
+            if (reservation != null)
             {
                 //If a reservation id is provided, find the reservation with the given ID
                 reservation = _context.Reservations.Find(reservationId);
@@ -494,7 +494,7 @@ namespace OnlineBookingSystem.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("ViewReservation");
             }
             return View(new Wrapper(Reservation, _context.Restaurants.Find(Reservation.RestaurantId, await _userManager.FindByIdAsync(_userManager.GetUserId(User)))));
         }

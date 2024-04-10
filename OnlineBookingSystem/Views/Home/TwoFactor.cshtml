@@ -10,6 +10,55 @@
     <title>Two Factor Authentication Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Your existing CSS here -->
+    <style>
+        .bg-image {
+            background-image: url('/images/login_page.png');
+            height: 100%;
+            width: 100%;
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: -1;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 5rem;
+            /* Using rem for padding */
+            border-radius: 0.625rem;
+            /* 10px equivalent in rem */
+            height: 30rem;
+            /* Height in rem */
+            width: 30rem;
+            /* Width in rem */
+            max-width: 50rem;
+            /* Increased max-width for larger area, in rem */
+            background: #FFFFFF;
+            /* Solid white background */
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1), 0 0.375rem 1.25rem rgba(0, 0, 0, 0.19);
+            /* Shadow in rem */
+            z-index: 2;
+            /* Ensure it's above the bg-overlay */
+        }
+    </style>
 </head>
 
 <body>
@@ -21,6 +70,7 @@
                 <h1 class="text-center mb-4">Two Factor Authentication</h1>
                 <p class="text-center">Please check your phone for a code.</p>
                 <form method="post" asp-action="TwoFactor">
+                    <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
                     <div class="form-group">
                         <label asp-for="code">Two Factor Code:</label>
                         <input asp-for="code" type="text" id="code" name="code" class="form-control" required>
