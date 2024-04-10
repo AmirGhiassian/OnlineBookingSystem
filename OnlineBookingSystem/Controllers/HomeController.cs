@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineBookingSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using Twilio;
 using Twilio.Rest.Verify.V2.Service;
 
@@ -419,6 +418,7 @@ namespace OnlineBookingSystem.Controllers
                 return NotFound(); //If the restaurant is not found, return a 404 error
             }
 
+
             Reservation reservation;
             if (reservationId.HasValue)
             {
@@ -488,6 +488,7 @@ namespace OnlineBookingSystem.Controllers
                 }
                 else
                 {
+                    Reservation.CustId = _userManager.GetUserId(User);
                     // Add the new reservation
                     _context.Reservations.Add(Reservation);
                 }
